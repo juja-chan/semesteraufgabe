@@ -3,28 +3,24 @@ package data;
 import java.util.zip.DataFormatException;
 
 public abstract class DigitalEntertainment {
-	private String name, regisseur;
+	private String name, regieseur;
 	private int jahr;
 	private boolean gesehen;
 	private int bewertung;
+	private int id = 0;
 
-	public DigitalEntertainment(String name, String regisseur, int jahr, boolean gesehen, int bewertung)
-			throws DataFormatException {
-		setName(name);
-		setRegisseur(regisseur);
-		setJahr(jahr);
-		this.gesehen = gesehen;
-		setBewertung(bewertung);
+	public DigitalEntertainment(String Name, String regisseur, int jahr, boolean gesehen, int bewertung, int id) {
+
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) throws DataFormatException {
-		if (!checkName(name))
-			throw new DataFormatException("zu wenig zeichen");
-		this.name = name;
+	public void setName(String name) throws DataFormatException{
+		if (checkName(name))
+			this.name = name;
+		throw new DataFormatException("zu wenig zeichen");
 
 	}
 
@@ -35,18 +31,18 @@ public abstract class DigitalEntertainment {
 		return true;
 	}
 
-	public String getRegisseur() {
-		return regisseur;
+	public String getRegieseur() {
+		return regieseur;
 	}
 
-	public void setRegisseur(String regisseur) throws DataFormatException {
-		if (!checkRegisseur(regisseur))
-			throw new DataFormatException("zu wenig zeichen");
-		this.regisseur = regisseur;
+	public void setRegieseur(String regieseur) throws DataFormatException{
+		if(checkRegieseur(regieseur))
+		this.regieseur = regieseur;
+		throw new DataFormatException("zu wenig zeichen");
 	}
 
-	public boolean checkRegisseur(String regisseur) {
-		if (regisseur == null || regisseur.equals("")) {
+	public boolean checkRegieseur(String regieseur) {
+		if (regieseur == null || regieseur.equals("")) {
 			return false;
 		}
 		return true;
@@ -56,15 +52,16 @@ public abstract class DigitalEntertainment {
 		return jahr;
 	}
 
-	public void setJahr(int jahr) throws DataFormatException {
-		if (!checkJahr(jahr))
-			throw new DataFormatException("Film wurden damals noch nicht erfunden - späteres Jahr angeben");
+	public void setJahr(int jahr) throws DataFormatException{
+		if(checkJahr(jahr))
 		this.jahr = jahr;
+		throw new DataFormatException("Film wurden damals noch nicht erfunden - spwateres Jahr angeben");
 	}
 
 	public boolean checkJahr(int jahr) {
-		if (jahr < 1895) 
+		if (jahr < 1895) {
 			return false;
+		}
 		return true;
 	}
 
@@ -81,9 +78,9 @@ public abstract class DigitalEntertainment {
 	}
 
 	public void setBewertung(int bewertung) throws DataFormatException {
-		if (!checkBewertung(bewertung))
-			throw new DataFormatException("falsche bewertung");
+		if(checkBewertung(bewertung))
 		this.bewertung = bewertung;
+		throw new DataFormatException("falsche bewertung");
 	}
 
 	public boolean checkBewertung(int bewertung) {
@@ -94,3 +91,4 @@ public abstract class DigitalEntertainment {
 	}
 
 }
+
