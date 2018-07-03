@@ -26,6 +26,7 @@ public class Hauptfenster extends Frame implements ItemListener, ActionListener 
 	private Button bFilm;
 	private Button bList;
 	private Button nList;
+	private Button Obsp;
 	private List listfilm;
 	private List listwatch;
 	private Label lFilm;
@@ -46,6 +47,7 @@ public class Hauptfenster extends Frame implements ItemListener, ActionListener 
 		lFilm = new Label ("unsortierte Filme");
 		lList = new Label("Watchlist");
 		film = new Film("TestFilm1", "reg", 1995, true, 4, 1);
+		Obsp = new Button ("alle Objekte speichern");
 		try {
 			unique.linkFilm(film);
 		} catch (IllegalInputException e1) {
@@ -73,6 +75,7 @@ public class Hauptfenster extends Frame implements ItemListener, ActionListener 
 		add(bFilm);
 		add(bList);
 		add(nList);
+		add(Obsp);
 
 
 		listfilm.addItemListener(this);
@@ -95,9 +98,12 @@ public class Hauptfenster extends Frame implements ItemListener, ActionListener 
 	}
 	public void actionPerformed( ActionEvent e1) {
 		if(e1.getSource().equals(nList)) {
-			new NeueWatchlist(this);
-			
+			new NeueWatchlist(this);	
+		}
+		if(e1.getSource().equals(Obsp)) {
+			save(Verwaltung unique); 
 		}
 	}
+
 
 }
