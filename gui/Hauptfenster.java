@@ -5,6 +5,8 @@ import java.awt.Button;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Label;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.WindowEvent;
@@ -18,11 +20,12 @@ import java.awt.event.WindowAdapter;
 import java.awt.List;
 import data.*;
 
-public class Hauptfenster extends Frame implements ItemListener {
+public class Hauptfenster extends Frame implements ItemListener, ActionListener {
 
 
 	private Button bFilm;
 	private Button bList;
+	private Button nList;
 	private List listfilm;
 	private List listwatch;
 	private Label lFilm;
@@ -37,6 +40,9 @@ public class Hauptfenster extends Frame implements ItemListener {
 		super("Bloedes Fenster");
 		setLayout(new GridLayout(5, 2, 10, 10));
 		unique = Verwaltung.instance();
+		bFilm = new Button ("neuer Film");
+		bList = new Button ("neuer Listeneintrag");
+		nList = new Button ("neue Watchlist anglegen");
 		lFilm = new Label ("unsortierte Filme");
 		lList = new Label("Watchlist");
 		film = new Film("TestFilm1", "reg", 1995, true, 4, 1);
@@ -59,26 +65,26 @@ public class Hauptfenster extends Frame implements ItemListener {
 		listwatch = new List(3, false);
 		listwatch.add("asdfn");
 		listwatch.add("sfmkl");
-		bFilm = new Button ("neuer Film");
-		bList = new Button ("neuer Listeneintrag");
-
+		
 		add(lFilm);
 		add(lList);
 		add(listfilm);
 		add(listwatch);
 		add(bFilm);
 		add(bList);
+		add(nList);
 
 
 		listfilm.addItemListener(this);
 		listwatch.addItemListener(this);
+		nList.addActionListener(this);
 
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing( WindowEvent e) {
 				dispose();
 			}
 		});
-
+		setLocationRelativeTo(null);
 		pack();
 		setVisible(true);
 
@@ -86,6 +92,12 @@ public class Hauptfenster extends Frame implements ItemListener {
 
 	public void itemStateChanged(ItemEvent e) {
 
+	}
+	public void actionPerformed( ActionEvent e1) {
+		if(e1.getSource().equals(nList)) {
+			new NeueWatchlist(this);
+			
+		}
 	}
 
 }
