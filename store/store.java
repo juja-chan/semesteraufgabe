@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import data.*;
 
 public class store {
 	private String filename;
@@ -19,15 +20,18 @@ public class store {
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(filename));
 			while (!reader.readLine().equals("ende")) {
-				unique.linkfilm(new Film(reader.readLine(), reader.readLine(), reader.readLine(), reader.readLine(),
-						reader.readLine(), reader.readLine()));
+				unique.linkFilm(new Film(reader.readLine(), reader.readLine(), Integer.parseInt(reader.readLine()), Boolean.parseBoolean(reader.readLine()),
+						Integer.parseInt(reader.readLine()), Integer.parseInt(reader.readLine())));
 			}
 			
 			while (!reader.readLine().equals("ende")){
-				unique.linkWatchList(reader.readLine());
+				Watchlist watchlist = new Watchlist(reader.readLine());
+				unique.linkWatchlist(new Watchlist(reader.readLine()));
 			}
 			
 			for (DigitalEntertainment d : unique) {
+				
+			}
 
 		} catch (FileNotFoundException e) {
 			throw new LoadSaveException("Datei wurde nicht gefunden", e);
@@ -42,15 +46,16 @@ public class store {
 				writer.println(d.getName());
 				writer.println(d.getRegisseur());
 				writer.println(Integer.toString(d.getJahr()));
-				writer.println(Boolean.toString(d.getGesehen()));
+				writer.println(Boolean.toString(d.isGesehen()));
 				writer.println(Integer.toString(d.getBewertung()));
 				writer.println(Integer.toString(d.getId()));
 			}
 			writer.println("ende");
-			ArrayList<Watchlist> watchlist = unique.getWatchlist();
-			for (int i = 0; i < watchlist.length(); i++) {
+			ArrayList<Watchlist> watchlist = unique.getAlleWatchlists();
+			for (int i = 0; i < watchlist.size(); i++) {
 				writer.println("watchlist");
-				writer.println(watchlist.getItem(i).getId());
+				writer.println(watchlist.get(i).getName());
+				writer.println(watchlist.get(i).getId());
 			}
 			writer.println("ende");
 		} catch (IOException e) {
