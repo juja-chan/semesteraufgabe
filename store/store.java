@@ -9,10 +9,10 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import data.*;
 
-public class store {
+public class Store {
 	private String filename;
 
-	public store(String filename) {
+	public Store(String filename) {
 		this.filename = filename;
 	}
 
