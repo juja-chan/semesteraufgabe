@@ -3,9 +3,10 @@ package data;
 import java.util.ArrayList;
 import java.util.zip.DataFormatException;
 
-public class Watchlist extends ArrayList<Film> {
+public class Watchlist {
 	
 	private String name;
+	private ArrayList<DigitalEntertainment> inhalt;
 
 	public Watchlist(String name){
 		super();
@@ -30,14 +31,23 @@ public class Watchlist extends ArrayList<Film> {
 	}
 	
 	public void addFilm(Film f){
-		
+		if(inhalt.contains(f)){
+			
+		}else{
+			inhalt.add(f);
+		}
 	}
 	public void removeFilm(Film f){
-		
+		if(inhalt.contains(f)){
+			
+		}else{
+			inhalt.remove(f);
+		}
 	}
-	/*
-	public getFilme(){
-		return ArrayList;
+	
+	public ArrayList<DigitalEntertainment>getInhalt(){
+		return inhalt;
 	}
-	*/
+	
+	
 }
