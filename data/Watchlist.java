@@ -3,41 +3,55 @@ package data;
 import java.util.ArrayList;
 import java.util.zip.DataFormatException;
 
-public class Watchlist extends ArrayList<Film> {
-	
-	private String name;
+public class Watchlist {
 
-	public Watchlist(String name){
+	private String name;
+	private ArrayList<DigitalEntertainment> inhalt;
+
+	public Watchlist(String name) throws DataFormatException {
 		super();
+		setName(name);
+		inhalt = new ArrayList<DigitalEntertainment>();
+		System.out.println("hat geklappt");
 	}
-	
+
 	public String getName() {
 		return name;
 	}
 
 	public void setName(String name) throws DataFormatException {
-		if (checkName(name))
-			this.name = name;
-		throw new DataFormatException("zu wenig zeichen");
+		if (!checkName(name))
+			throw new DataFormatException("Anlegen der neuen Watchlist fehlgeschlagen");
+		this.name = name;
 
 	}
-	
-	public boolean checkName(String name){
+
+	public boolean checkName(String name) {
 		if (name == null || name.equals("")) {
 			return false;
 		}
 		return true;
 	}
-	
-	public void addFilm(Film f){
-		
+
+	public void linkDigitalEntertainment(DigitalEntertainment f) throws IllegalInputException {
+		if (this.inhalt.contains(f))
+			throw new IllegalInputException("DigitalEntertainment schon vorhanden", f.getName());
+		this.inhalt.add(f);
+
 	}
-	public void removeFilm(Film f){
-		
+
+	public void unlinkDigitalEntertainment(DigitalEntertainment f) throws IllegalInputException {
+		if (this.inhalt.contains(f))
+			throw new IllegalInputException("DigitalEntertainment nicht vorhanden", f.getName());
+		this.inhalt.remove(f);
 	}
-	/*
-	public getFilme(){
-		return ArrayList;
+
+	public ArrayList<DigitalEntertainment> getDigitalEntertainmente() {
+		ArrayList<DigitalEntertainment> copy = new ArrayList<DigitalEntertainment>();
+		for (int i = 0; i < inhalt.size(); i++) {
+			copy.add(inhalt.get(i));
+		}
+		return copy;
 	}
-	*/
+
 }

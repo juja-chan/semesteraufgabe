@@ -11,57 +11,67 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.zip.DataFormatException;
+
 import data.Watchlist;
 import data.IllegalInputException;
 import data.Verwaltung;
 
-public class NeueWatchlist extends Dialog   implements ActionListener  {
-	
+public class NeueWatchlist extends Dialog implements ActionListener {
+
 	private TextField nametf;
 	private Button speichern;
-	private Button abbrechen; 
+	private Button abbrechen;
 	private Label namelb;
-	
-	public NeueWatchlist( Frame owner ) {
+	private Hauptfenster owner;
+
+	public NeueWatchlist(Frame owner) {
 		super(owner, "nList");
-		
-		setLayout(new GridLayout (2,2));
+
+		this.owner = (Hauptfenster) owner;
+		setLayout(new GridLayout(2, 2));
 		setTitle("Anlegen einer Watchlist");
 		nametf = new TextField(" ");
 		speichern = new Button("speichern");
 		abbrechen = new Button("abbrechen");
 		namelb = new Label("Name der Watchlist: ");
-		
+
 		add(namelb);
 		add(nametf);
 		add(speichern);
 		add(abbrechen);
-		
+
 		speichern.addActionListener(this);
 		abbrechen.addActionListener(this);
 		this.addWindowListener(new WindowAdapter() {
-			public void windowClosing( WindowEvent e) {
+			public void windowClosing(WindowEvent e) {
 				dispose();
 			}
 		});
 		pack();
 		setLocationRelativeTo(null);
-		setVisible(true);		
+		setVisible(true);
+
 	}
-	
-	public void actionPerformed( ActionEvent e) {
-		if(e.getSource().equals(speichern)) {
+
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource().equals(speichern)) {
 			try {
-			Verwaltung.instance().linkWatchlist(new Watchlist(nametf.getText()));
-		}
-			catch (IllegalInputException e1) {
+				Watchlist w;
+				try {
+					w = new Watchlist(nametf.getText());
+					Verwaltung.instance().linkWatchlist(w);
+					owner.addWatchlist(w);
+				} catch (DataFormatException e1) {
+					System.err.println(e1.getMessage());
+				}
+				
+			} catch (IllegalInputException e1) {
 				System.err.println(e1.getMessage());
 			}
-			}
-			else if(e.getSource().equals(abbrechen)) {
-				dispose();
-			}
+			nametf.setText("");
+		} else if (e.getSource().equals(abbrechen)) {
+			dispose();
+		}
 	}
-	}
-
-
+}

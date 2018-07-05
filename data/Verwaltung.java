@@ -11,12 +11,14 @@ import data.IllegalInputException;
 public class Verwaltung implements Iterable<DigitalEntertainment>, Serializable{
 	
 	private static Verwaltung unique = null;
-	private ArrayList<DigitalEntertainment> alleFilme;
+	private ArrayList<DigitalEntertainment> alleDigitalEntertainmente;
 	private ArrayList<Watchlist> alleWatchlists;
+	int id = 0;
 	//private transient PersistenceSer store = null;
 	
 	private Verwaltung(){
-		alleFilme = new ArrayList<DigitalEntertainment>();
+		alleDigitalEntertainmente = new ArrayList<DigitalEntertainment>();
+		alleWatchlists = new ArrayList<Watchlist>();
 	}
 	
 	public static Verwaltung instance(){
@@ -25,10 +27,12 @@ public class Verwaltung implements Iterable<DigitalEntertainment>, Serializable{
 		return unique;
 	}
 	
-	public void linkFilm(DigitalEntertainment f) throws IllegalInputException {
-		if (this.alleFilme.contains(f))
-		    throw new IllegalInputException("Film schon vorhanden", f.getName());
-		this.alleFilme.add(f);
+	public void linkDigitalEntertainment(DigitalEntertainment f) throws IllegalInputException {
+		if (this.alleDigitalEntertainmente.contains(f))
+		    throw new IllegalInputException("DigitalEntertainment schon vorhanden", f.getName());
+		this.alleDigitalEntertainmente.add(f);
+		//f.setId(id)  Die id hinzufügen ;
+		//id++ id hochzählen;
 	    }
 	
 	public void linkWatchlist(Watchlist w) throws IllegalInputException {
@@ -37,10 +41,10 @@ public class Verwaltung implements Iterable<DigitalEntertainment>, Serializable{
 		this.alleWatchlists.add(w);
 	}
 	
-	public void unlinkFilm(DigitalEntertainment f) throws IllegalInputException {
-		if (!this.alleFilme.contains(f))
-			throw new IllegalInputException("Film nicht vorhanden", f.getName());
-		this.alleFilme.remove(f);
+	public void unlinkDigitalEntertainment(DigitalEntertainment f) throws IllegalInputException {
+		if (!this.alleDigitalEntertainmente.contains(f))
+			throw new IllegalInputException("DigitalEntertainment nicht vorhanden", f.getName());
+		this.alleDigitalEntertainmente.remove(f);
 	    }
 	
 	public void unlinkWatchlist(DigitalEntertainment w)throws IllegalInputException {
@@ -50,10 +54,14 @@ public class Verwaltung implements Iterable<DigitalEntertainment>, Serializable{
 	    }
 	
 	public Iterator<DigitalEntertainment> iterator() {
-		return this.alleFilme.iterator();
+		return this.alleDigitalEntertainmente.iterator();
 	    }
 	public ArrayList<Watchlist> getAlleWatchlists(){
-		return alleWatchlists;
+		ArrayList<Watchlist> copy = new ArrayList<Watchlist>(); 
+		for(int i =0; i< alleWatchlists.size();i++){
+			copy.add(alleWatchlists.get(i));
+		}
+		return copy;
 	}
 	
 	

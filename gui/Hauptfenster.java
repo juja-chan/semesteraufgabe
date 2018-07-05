@@ -13,12 +13,14 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 import java.awt.List;
-
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.zip.DataFormatException;
 import java.awt.event.WindowAdapter;
 import java.awt.List;
 import data.*;
+import store.LoadSaveException;
+import store.Store;
 
 public class Hauptfenster extends Frame implements ItemListener, ActionListener {
 
@@ -27,6 +29,7 @@ public class Hauptfenster extends Frame implements ItemListener, ActionListener 
 	private Button bList;
 	private Button nList;
 	private Button Obsp;
+	private Button storeladen;
 	private List listfilm;
 	private List listwatch;
 	private Label lFilm;
@@ -46,10 +49,12 @@ public class Hauptfenster extends Frame implements ItemListener, ActionListener 
 		nList = new Button ("neue Watchlist anglegen");
 		lFilm = new Label ("unsortierte Filme");
 		lList = new Label("Watchlist");
-		film = new Film("TestFilm1", "reg", 1995, true, 4, 1);
+		film = new Film("TestFilm1", "reg", 1995, true, 4);
 		Obsp = new Button ("alle Objekte speichern");
+		storeladen = new Button("Verwaltung laden");
+		
 		try {
-			unique.linkFilm(film);
+			unique.linkDigitalEntertainment(film);
 		} catch (IllegalInputException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -59,12 +64,12 @@ public class Hauptfenster extends Frame implements ItemListener, ActionListener 
 		}
 
 
-		listfilm = new List(3, false);
-		for(DigitalEntertainment d: unique){
-			listfilm.add(d.getName());
-		}
+		listfilm = new List(5, false);
+		//for(DigitalEntertainment d: unique){
+			//listfilm.add(d.getName());
+	//	}
 
-		listwatch = new List(3, false);
+		listwatch = new List(5, false);
 		listwatch.add("asdfn");
 		listwatch.add("sfmkl");
 		
@@ -76,11 +81,15 @@ public class Hauptfenster extends Frame implements ItemListener, ActionListener 
 		add(bList);
 		add(nList);
 		add(Obsp);
+		add(storeladen);
 
 
 		listfilm.addItemListener(this);
 		listwatch.addItemListener(this);
 		nList.addActionListener(this);
+		bList.addActionListener(this);
+		bFilm.addActionListener(this);
+		storeladen.addActionListener(this);
 
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing( WindowEvent e) {
@@ -93,16 +102,43 @@ public class Hauptfenster extends Frame implements ItemListener, ActionListener 
 
 	}
 
-	public void itemStateChanged(ItemEvent e) {
+	public void itemStateChanged(ItemEvent e) { //get selectedItem
+		int selection =  listwatch.getSelectedIndex();
+		if(selection != 0) {
+			new EditWatchlist(this, null, null);
+		}
 
 	}
 	public void actionPerformed( ActionEvent e1) {
 		if(e1.getSource().equals(nList)) {
-			new NeueWatchlist(this);	
+			new NeueWatchlist(this);	//nullPointerException wird immer noch geworfen!
 		}
 		if(e1.getSource().equals(Obsp)) {
-			save(Verwaltung unique); 
+			//getWatchlist(unique); 
 		}
+		if(e1.getSource().equals(bList)) {
+			new EditWatchlist(null, null, null);
+		}
+		if(e1.getSource().equals(bFilm)) {
+		new NeuFilm(this);
+		}
+		if(e1.getSource().equals(storeladen)) {
+			Store store = new Store("Platzhalter.txt");
+			
+			try {
+				store.load(unique);
+			} catch (LoadSaveException e) {
+				System.err.println(e.getMessage());
+			}
+		}
+	}
+	
+	public void addWatchlist(Watchlist w) {
+		listwatch.add(w.getName());
+	}
+	
+	public void addDigitalEntertainment(DigitalEntertainment d) {
+		listfilm.add(d.getName());
 	}
 
 
