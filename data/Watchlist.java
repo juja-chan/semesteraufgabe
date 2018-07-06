@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.zip.DataFormatException;
 
 public class Watchlist {
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> georg
 	private String name;
 	private ArrayList<DigitalEntertainment> inhalt;
 
@@ -32,6 +36,7 @@ public class Watchlist {
 		}
 		return true;
 	}
+<<<<<<< HEAD
 
 	public void linkDigitalEntertainment(DigitalEntertainment f) throws IllegalInputException {
 		if (this.inhalt.contains(f))
@@ -54,4 +59,27 @@ public class Watchlist {
 		return copy;
 	}
 
+=======
+	
+	public void addFilm(Film f){
+		if(inhalt.contains(f)){
+			
+		}else{
+			inhalt.add(f);
+		}
+	}
+	public void removeFilm(Film f){
+		if(inhalt.contains(f)){
+			
+		}else{
+			inhalt.remove(f);
+		}
+	}
+	
+	public ArrayList<DigitalEntertainment>getInhalt(){
+		return inhalt;
+	}
+	
+	
+>>>>>>> georg
 }
