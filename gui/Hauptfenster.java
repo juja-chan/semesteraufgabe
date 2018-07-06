@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Button;
+import java.awt.Component;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Label;
@@ -40,7 +41,7 @@ public class Hauptfenster extends Frame implements ItemListener, ActionListener 
 	private Film film;
 
 	public Hauptfenster() {
-		
+
 		super("Bloedes Fenster");
 		setLayout(new GridLayout(5, 2, 10, 10));
 		unique = Verwaltung.instance();
@@ -49,10 +50,15 @@ public class Hauptfenster extends Frame implements ItemListener, ActionListener 
 		nList = new Button ("neue Watchlist anglegen");
 		lFilm = new Label ("unsortierte Filme");
 		lList = new Label("Watchlist");
-		film = new Film("TestFilm1", "reg", 1995, true, 4);
+		try {
+			film = new Film("TestFilm1", "reg", 1995, true, 4);
+		} catch (DataFormatException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
 		Obsp = new Button ("alle Objekte speichern");
 		storeladen = new Button("Verwaltung laden");
-		
+
 		try {
 			unique.linkDigitalEntertainment(film);
 		} catch (IllegalInputException e1) {
@@ -61,18 +67,17 @@ public class Hauptfenster extends Frame implements ItemListener, ActionListener 
 		}
 		for(DigitalEntertainment d: unique){
 			System.out.println("print Name: " + d.getName());
+
 		}
 
 
 		listfilm = new List(5, false);
-		//for(DigitalEntertainment d: unique){
-			//listfilm.add(d.getName());
-	//	}
+
 
 		listwatch = new List(5, false);
 		listwatch.add("asdfn");
 		listwatch.add("sfmkl");
-		
+
 		add(lFilm);
 		add(lList);
 		add(listfilm);
@@ -83,7 +88,8 @@ public class Hauptfenster extends Frame implements ItemListener, ActionListener 
 		add(Obsp);
 		add(storeladen);
 
-
+		
+		refreshFilm();
 		listfilm.addItemListener(this);
 		listwatch.addItemListener(this);
 		nList.addActionListener(this);
@@ -107,11 +113,18 @@ public class Hauptfenster extends Frame implements ItemListener, ActionListener 
 		if(selection != 0) {
 			new EditWatchlist(this, null, null);
 		}
-
 	}
+	public void itemStateChanged1(ItemEvent e1){
+		int selection1 = listwatch.getSelectedIndex();
+		if(selection1 != 0) {
+			//new EdithFilm(this);
+		}
+	}
+
+
 	public void actionPerformed( ActionEvent e1) {
 		if(e1.getSource().equals(nList)) {
-			new NeueWatchlist(this);	//nullPointerException wird immer noch geworfen!
+			new NeueWatchlist(this);	
 		}
 		if(e1.getSource().equals(Obsp)) {
 			//getWatchlist(unique); 
@@ -120,11 +133,11 @@ public class Hauptfenster extends Frame implements ItemListener, ActionListener 
 			new EditWatchlist(null, null, null);
 		}
 		if(e1.getSource().equals(bFilm)) {
-		new NeuFilm(this);
+			new NeuFilm(this);
 		}
 		if(e1.getSource().equals(storeladen)) {
 			Store store = new Store("Platzhalter.txt");
-			
+
 			try {
 				store.load(unique);
 			} catch (LoadSaveException e) {
@@ -132,13 +145,22 @@ public class Hauptfenster extends Frame implements ItemListener, ActionListener 
 			}
 		}
 	}
-	
+
 	public void addWatchlist(Watchlist w) {
 		listwatch.add(w.getName());
 	}
-	
+
 	public void addDigitalEntertainment(DigitalEntertainment d) {
 		listfilm.add(d.getName());
+	}
+	public void addFilm(Film f) {
+		listwatch.add(f.getName());
+	}
+	public void refreshFilm() {
+		listfilm.removeAll();
+		for(DigitalEntertainment d: unique){
+			listfilm.add(d.toString());
+			}
 	}
 
 

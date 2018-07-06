@@ -9,8 +9,14 @@ public abstract class DigitalEntertainment {
 	private int bewertung;
 	private int id = 0;
 
-	public DigitalEntertainment(String Name, String regisseur, int jahr, boolean gesehen, int bewertung) {
+	public DigitalEntertainment(String name, String regisseur, int jahr, boolean gesehen, int bewertung) throws DataFormatException{
 
+		setName(name);
+		setRegisseur(regisseur);
+		setJahr(jahr);
+		setGesehen(gesehen);
+		setBewertung(bewertung);
+		
 	}
 
 	public String getName() {
@@ -55,7 +61,7 @@ public abstract class DigitalEntertainment {
 
 	public void setJahr(int jahr) throws DataFormatException {
 		if (!checkJahr(jahr))
-			throw new DataFormatException("Film wurden damals noch nicht erfunden - spwateres Jahr angeben");
+			throw new DataFormatException("Digital Entertaiments wurden damals noch nicht erfunden - spwateres Jahr angeben");
 		this.jahr = jahr;
 	}
 
@@ -97,6 +103,9 @@ public abstract class DigitalEntertainment {
 
 	public int getId() {
 		return id;
+	}
+	public String toString() {
+		return name + "("+jahr+")"; 
 	}
 
 }
