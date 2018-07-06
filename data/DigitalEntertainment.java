@@ -3,14 +3,27 @@ package data;
 import java.util.zip.DataFormatException;
 
 public abstract class DigitalEntertainment {
-	private String name, regieseur;
+	private String name, regisseur;
 	private int jahr;
 	private boolean gesehen;
 	private int bewertung;
-	private int id = 0;
+	private int id;
 
-	public DigitalEntertainment(String Name, String regisseur, int jahr, boolean gesehen, int bewertung, int id) {
-
+	public DigitalEntertainment(String name, String regisseur, int jahr, boolean gesehen, int bewertung, int id) throws DataFormatException {
+		setName(name);
+		setRegisseur(regisseur);
+		setJahr(jahr);
+		setGesehen(gesehen);
+		setBewertung(bewertung);
+		setId(id);
+	}
+	
+	public void setId(int id){
+		this.id = id;
+	}
+	
+	public int getId(){
+		return id;
 	}
 
 	public String getName() {
@@ -31,17 +44,17 @@ public abstract class DigitalEntertainment {
 		return true;
 	}
 
-	public String getRegieseur() {
-		return regieseur;
+	public String getRegisseur() {
+		return regisseur;
 	}
 
-	public void setRegieseur(String regieseur) throws DataFormatException{
-		if(checkRegieseur(regieseur))
-		this.regieseur = regieseur;
+	public void setRegisseur(String regisseur) throws DataFormatException{
+		if(checkRegisseur(regisseur))
+		this.regisseur = regisseur;
 		throw new DataFormatException("zu wenig zeichen");
 	}
 
-	public boolean checkRegieseur(String regieseur) {
+	public boolean checkRegisseur(String regieseur) {
 		if (regieseur == null || regieseur.equals("")) {
 			return false;
 		}
