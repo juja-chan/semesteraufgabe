@@ -7,9 +7,24 @@ public abstract class DigitalEntertainment {
 	private int jahr;
 	private boolean gesehen;
 	private int bewertung;
-	private int id = 0;
+	private int id;
 
-	public DigitalEntertainment(String Name, String regisseur, int jahr, boolean gesehen, int bewertung) {
+	public DigitalEntertainment(String name, String regisseur, int jahr, boolean gesehen, int bewertung, int id) throws DataFormatException {
+
+		setName(name);
+		setRegisseur(regisseur);
+		setJahr(jahr);
+		setGesehen(gesehen);
+		setBewertung(bewertung);
+		setId(id);
+	}
+	
+	public void setId(int id){
+		this.id = id;
+	}
+	
+	public int getId(){
+		return id;
 
 	}
 
@@ -35,15 +50,16 @@ public abstract class DigitalEntertainment {
 		return regisseur;
 	}
 
-	public void setRegisseur(String regisseur) throws DataFormatException {
-		if (!checkRegisseur(regisseur))
-			throw new DataFormatException("zu wenig zeichen");
-		this.regisseur = regisseur;
 
+	public void setRegisseur(String regisseur) throws DataFormatException{
+		if(checkRegisseur(regisseur))
+		this.regisseur = regisseur;
+		throw new DataFormatException("zu wenig zeichen");
 	}
 
-	public boolean checkRegisseur(String regisseur) {
-		if (regisseur == null || regisseur.equals("")) {
+	public boolean checkRegisseur(String regieseur) {
+		if (regieseur == null || regieseur.equals("")) {
+
 			return false;
 		}
 		return true;
@@ -55,7 +71,7 @@ public abstract class DigitalEntertainment {
 
 	public void setJahr(int jahr) throws DataFormatException {
 		if (!checkJahr(jahr))
-			throw new DataFormatException("Film wurden damals noch nicht erfunden - spwateres Jahr angeben");
+			throw new DataFormatException("Digital Entertaiments wurden damals noch nicht erfunden - spwateres Jahr angeben");
 		this.jahr = jahr;
 	}
 
@@ -97,6 +113,9 @@ public abstract class DigitalEntertainment {
 
 	public int getId() {
 		return id;
+	}
+	public String toString() {
+		return name + "("+jahr+")"; 
 	}
 
 }
