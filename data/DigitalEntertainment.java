@@ -9,8 +9,7 @@ public abstract class DigitalEntertainment {
 	private int bewertung;
 	private int id;
 
-	public DigitalEntertainment(String name, String regisseur, int jahr, boolean gesehen, int bewertung, int id) throws DataFormatException {
-
+	public DigitalEntertainment(String name, String regisseur, int jahr, boolean gesehen, int bewertung) throws DataFormatException {
 		setName(name);
 		setRegisseur(regisseur);
 		setJahr(jahr);
@@ -25,18 +24,18 @@ public abstract class DigitalEntertainment {
 	
 	public int getId(){
 		return id;
-
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) throws DataFormatException {
-		if (!checkName(name))			
+	public void setName(String name) throws DataFormatException{
+		if (checkName(name)){
+			this.name = name;
+		} else {
 			throw new DataFormatException("zu wenig zeichen");
-		this.name = name;
-
+		}
 	}
 
 	public boolean checkName(String name) {
@@ -50,16 +49,16 @@ public abstract class DigitalEntertainment {
 		return regisseur;
 	}
 
-
 	public void setRegisseur(String regisseur) throws DataFormatException{
-		if(checkRegisseur(regisseur))
+		if(checkRegisseur(regisseur)){
 		this.regisseur = regisseur;
+		} else{
 		throw new DataFormatException("zu wenig zeichen");
+		}
 	}
 
 	public boolean checkRegisseur(String regieseur) {
 		if (regieseur == null || regieseur.equals("")) {
-
 			return false;
 		}
 		return true;
@@ -69,10 +68,12 @@ public abstract class DigitalEntertainment {
 		return jahr;
 	}
 
-	public void setJahr(int jahr) throws DataFormatException {
-		if (!checkJahr(jahr))
-			throw new DataFormatException("Digital Entertaiments wurden damals noch nicht erfunden - spwateres Jahr angeben");
+	public void setJahr(int jahr) throws DataFormatException{
+		if(checkJahr(jahr)){
 		this.jahr = jahr;
+		} else{
+		throw new DataFormatException("Film wurden damals noch nicht erfunden - spwateres Jahr angeben");
+		}
 	}
 
 	public boolean checkJahr(int jahr) {
@@ -95,27 +96,19 @@ public abstract class DigitalEntertainment {
 	}
 
 	public void setBewertung(int bewertung) throws DataFormatException {
-		if (!checkBewertung(bewertung))
-			throw new DataFormatException("falsche bewertung");
+		if(checkBewertung(bewertung)){
 		this.bewertung = bewertung;
+		} else {
+			throw new DataFormatException("falsche bewertung");
+		}
 	}
 
 	public boolean checkBewertung(int bewertung) {
-		if (bewertung < 1 || bewertung > 10) {
+		if (bewertung < 0 || bewertung > 10) {
 			return false;
 		}
 		return true;
 	}
 
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public int getId() {
-		return id;
-	}
-	public String toString() {
-		return name + "("+jahr+")"; 
-	}
-
 }
+
