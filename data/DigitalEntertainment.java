@@ -9,14 +9,13 @@ public abstract class DigitalEntertainment {
 	private int bewertung;
 	private int id;
 
-	public DigitalEntertainment(String name, String regisseur, int jahr, boolean gesehen, int bewertung, int id)
+	public DigitalEntertainment(String name, String regisseur, int jahr, boolean gesehen, int bewertung)
 			throws DataFormatException {
 		setName(name);
 		setRegisseur(regisseur);
 		setJahr(jahr);
 		setGesehen(gesehen);
 		setBewertung(bewertung);
-		setId(id);
 	}
 
 	public void setId(int id) {
