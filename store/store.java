@@ -19,40 +19,79 @@ public class Store {
 	}
 
 	public void load(Verwaltung unique) throws LoadSaveException {
-		try {
-			BufferedReader reader = new BufferedReader(new FileReader(filename));
-			while (!reader.readLine().equals("ende")) {
-				try {
-					unique.linkDigitalEntertainment(new Film(reader.readLine(), reader.readLine(),
-							Integer.parseInt(reader.readLine()), Boolean.parseBoolean(reader.readLine()),
-							Integer.parseInt(reader.readLine()), Integer.parseInt(reader.readLine())));
-				} catch (IllegalInputException i) {
-					throw new LoadSaveException("Datei geändert oder " + i.getMessage(), i);
-				}
+		try (BufferedReader reader = new BufferedReader(new FileReader(filename));) {
+			String line = reader.readLine();
+			while (!line.equals("ende")) {
+				if (line.equals("film")) {
+					line = reader.readLine();
+					if (line == null)
+						throw new LoadSaveException("Name erwartet");
+					String name = line;
+					line = reader.readLine();
+					if (line == null)
+						throw new LoadSaveException("Regisseur erwartet");
+					String regisseur = line;
+					line = reader.readLine();
+					if (line == null)
+						throw new LoadSaveException("Jahr erwartet");
+					int jahr = Integer.parseInt(line);
+					line = reader.readLine();
+					if (line == null)
+						throw new LoadSaveException("Gesehen-wert erwartet");
+					boolean gesehen = Boolean.parseBoolean(line);
+					line = reader.readLine();
+					if (line == null)
+						throw new LoadSaveException("Bewertung erwartet");
+					int bewertung = Integer.parseInt(line);
+					line = reader.readLine();
+					if (line == null)
+						throw new LoadSaveException("Id erwartet");
+					int id = Integer.parseInt(line);
+					try {
+						Film film = new Film(name, regisseur, jahr, gesehen, bewertung);
+						unique.linkDigitalEntertainment(film);
+						film.setId(id);
+					} catch (DataFormatException | IllegalInputException d) {
+						throw new LoadSaveException("Datei geändert oder " + d.getMessage(), d);
+					}
+					line = reader.readLine();
+				} else
+					throw new LoadSaveException("'film' erwartet");
 			}
 
-			while (!reader.readLine().equals("ende")) {
+			line = reader.readLine();
+			while (!line.equals("ende")) {
 				try {
-					Watchlist watchlist = new Watchlist(reader.readLine());
-					String line = reader.readLine();
-					while (!line.equals("watchlist")) {
-						DigitalEntertainment d = unique.searchDigitalEntertainment(Integer.parseInt(line));
-						if (d != null) {
-							try {
-								watchlist.linkDigitalEntertainment(d);
-							} catch (IllegalInputException i) {
-								throw new LoadSaveException("Datei geändert oder " + i.getMessage() , i);
+					if (line.equals("watchlist")) {
+						line = reader.readLine();
+						if (line == null)
+							throw new LoadSaveException("Name erwartet");
+						Watchlist watchlist = new Watchlist(line);
+						line = reader.readLine();
+						while (!line.equals("watchlist")) {
+							line = reader.readLine();
+							if (line == null || !line.matches("[0-9]+") || !(line.length() > 0))
+								throw new LoadSaveException("Id erwartet");
+							DigitalEntertainment d = unique.searchDigitalEntertainment(Integer.parseInt(line));
+							if (d != null) {
+								try {
+									watchlist.linkDigitalEntertainment(d);
+								} catch (IllegalInputException i) {
+									throw new LoadSaveException("Datei geändert oder " + i.getMessage(), i);
+								}
 							}
 						}
-					}
-					unique.linkWatchlist(watchlist);
-				} catch (DataFormatException d) {
-					throw new LoadSaveException("Ungültiger Watchlistname; watchlist wird nicht geladen.", d);
-				} catch (IllegalInputException i) {
-					throw new LoadSaveException("Bereits vorhandene Watchlist kann nicht geladen werden", i);
+							unique.linkWatchlist(watchlist);
+						
+					} else
+						throw new LoadSaveException("'watchlist' erwartet");
+				} catch (IllegalInputException e) {
+					throw new LoadSaveException("Watchlist bereits vorhanden");
+				} catch (DataFormatException e) {
+					throw new LoadSaveException("Ungültiger Watchlistname");
 				}
+	 
 			}
-
 		} catch (FileNotFoundException e) {
 			throw new LoadSaveException("Datei wurde nicht gefunden", e);
 		} catch (IOException e) {
@@ -62,7 +101,6 @@ public class Store {
 
 	public void save(Verwaltung unique) throws LoadSaveException {
 		try (PrintWriter writer = new PrintWriter(new FileWriter(filename));) {
-
 			for (DigitalEntertainment d : unique) {
 				writer.println("film");
 				writer.println(d.getName());
