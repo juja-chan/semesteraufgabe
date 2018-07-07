@@ -23,7 +23,6 @@ import java.util.Iterator;
 import java.util.zip.DataFormatException;
 
 import java.awt.event.WindowAdapter;
-import java.awt.List;
 import data.*;
 import store.*;
 
@@ -110,8 +109,7 @@ public class Hauptfenster extends Frame implements ItemListener, ActionListener 
 		if (e.getSource().equals(listwatch)) {
 			for (int i = 0; i < unique.getAlleWatchlists().size(); i++) {
 				System.out.println(unique.getAlleWatchlists().get(i).getName() + "  "+listwatch.getSelectedItem());
-				if (unique.getAlleWatchlists().get(i).getName().equals(listwatch.getSelectedItem())) {
-					
+				if (unique.getAlleWatchlists().get(i).getName().equals(listwatch.getSelectedItem())) {					
 					new EditWatchlist(this, unique, unique.getAlleWatchlists().get(i));
 				}
 			}
