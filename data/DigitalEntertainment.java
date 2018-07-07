@@ -102,7 +102,7 @@ public abstract class DigitalEntertainment {
 
 	public boolean checkBewertung(int bewertung) {
 
-		if (bewertung < 1 || bewertung > 10)
+		if (bewertung < 0 || bewertung > 10)
 			return false;
 		return true;
 	}
