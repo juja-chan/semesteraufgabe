@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.zip.DataFormatException;
 
 public class Watchlist {
-	
+
 	private String name;
 	private ArrayList<DigitalEntertainment> inhalt;
 
