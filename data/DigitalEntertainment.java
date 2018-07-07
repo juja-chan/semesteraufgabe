@@ -17,9 +17,7 @@ public abstract class DigitalEntertainment {
 		setJahr(jahr);
 		setGesehen(gesehen);
 		setBewertung(bewertung);
-
-			}
-
+	}
 
 	public void setId(int id) {
 		this.id = id;
@@ -56,10 +54,8 @@ public abstract class DigitalEntertainment {
 		this.regisseur = regisseur;
 	}
 
-	public boolean checkRegisseur(String regieseur) {
-		if (regieseur == null || regieseur.equals(""))
-
-
+	public boolean checkRegisseur(String regisseur) {
+		if (regisseur == null || regisseur.equals(""))
 			return false;
 		return true;
 	}
@@ -101,11 +97,9 @@ public abstract class DigitalEntertainment {
 	}
 
 	public boolean checkBewertung(int bewertung) {
-
 		if (bewertung < 0 || bewertung > 10)
 			return false;
 		return true;
 	}
 
 }
-

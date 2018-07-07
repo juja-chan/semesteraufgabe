@@ -23,14 +23,12 @@ import java.util.Iterator;
 import java.util.zip.DataFormatException;
 
 import java.awt.event.WindowAdapter;
-import java.awt.List;
 import data.*;
 import store.*;
 
 public class Hauptfenster extends Frame implements ItemListener, ActionListener {
 
 	private Button bFilm;
-	private Button bList;
 	private Button nList;
 	private Button Obsp;
 	private Button storeladen;
@@ -48,7 +46,6 @@ public class Hauptfenster extends Frame implements ItemListener, ActionListener 
 		setLayout(new GridLayout(5, 2, 10, 10));
 		unique = Verwaltung.instance();
 		bFilm = new Button("neuer Film");
-		bList = new Button("neuer Listeneintrag");
 		nList = new Button("neue Watchlist anglegen");
 		lFilm = new Label("unsortierte Filme");
 		lList = new Label("Watchlist");
@@ -82,7 +79,6 @@ public class Hauptfenster extends Frame implements ItemListener, ActionListener 
 		add(listfilm);
 		add(listwatch);
 		add(bFilm);
-		add(bList);
 		add(nList);
 		add(Obsp);
 		add(storeladen);
@@ -90,7 +86,6 @@ public class Hauptfenster extends Frame implements ItemListener, ActionListener 
 		listfilm.addItemListener(this);
 		listwatch.addItemListener(this);
 		nList.addActionListener(this);
-		bList.addActionListener(this);
 		bFilm.addActionListener(this);
 		Obsp.addActionListener(this);
 		storeladen.addActionListener(this);
@@ -110,8 +105,7 @@ public class Hauptfenster extends Frame implements ItemListener, ActionListener 
 		if (e.getSource().equals(listwatch)) {
 			for (int i = 0; i < unique.getAlleWatchlists().size(); i++) {
 				System.out.println(unique.getAlleWatchlists().get(i).getName() + "  "+listwatch.getSelectedItem());
-				if (unique.getAlleWatchlists().get(i).getName().equals(listwatch.getSelectedItem())) {
-					
+				if (unique.getAlleWatchlists().get(i).getName().equals(listwatch.getSelectedItem())) {				
 					new EditWatchlist(this, unique, unique.getAlleWatchlists().get(i));
 				}
 			}
@@ -124,10 +118,6 @@ public class Hauptfenster extends Frame implements ItemListener, ActionListener 
 		}
 		if (e1.getSource().equals(Obsp)) 
 			onSave();
-
-		if (e1.getSource().equals(bList)) {
-			new EditWatchlist(null, null, null);
-		}
 		if (e1.getSource().equals(bFilm)) {
 			new NeuFilm(this);
 		}
@@ -146,7 +136,7 @@ public class Hauptfenster extends Frame implements ItemListener, ActionListener 
 	public void refreshFilm() {
 		listfilm.removeAll();
 		for(DigitalEntertainment d: unique){
-			listfilm.add(d.toString());
+			listfilm.add(d.getName());
 			}
 	}
 	
@@ -159,13 +149,13 @@ public class Hauptfenster extends Frame implements ItemListener, ActionListener 
 			try {
 				unique.load(filename);
 				setMessage("Erfolgreich geladen");
-				refreshFilm();
 				for(DigitalEntertainment d: unique) {
 					System.out.println(d.getName());
 				}
 			} catch (LoadSaveException e) {
 				System.err.println(e.getMessage());
 			}
+			refreshFilm();
 		} else
 			setMessage("Keine Datei zum Laden gewählt!");
 	}

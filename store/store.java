@@ -22,28 +22,35 @@ public class Store {
 		try (BufferedReader reader = new BufferedReader(new FileReader(filename));) {
 			String line = reader.readLine();
 			while (!line.equals("ende")) {
+				System.out.println(line);
 				if (line.equals("film")) {
 					line = reader.readLine();
+					System.out.println(line);
 					if (line == null)
 						throw new LoadSaveException("Name erwartet");
 					String name = line;
 					line = reader.readLine();
+					System.out.println(line);
 					if (line == null)
 						throw new LoadSaveException("Regisseur erwartet");
 					String regisseur = line;
 					line = reader.readLine();
+					System.out.println(line);
 					if (line == null)
 						throw new LoadSaveException("Jahr erwartet");
 					int jahr = Integer.parseInt(line);
 					line = reader.readLine();
+					System.out.println(line);
 					if (line == null)
 						throw new LoadSaveException("Gesehen-wert erwartet");
 					boolean gesehen = Boolean.parseBoolean(line);
 					line = reader.readLine();
+					System.out.println(line);
 					if (line == null)
 						throw new LoadSaveException("Bewertung erwartet");
 					int bewertung = Integer.parseInt(line);
 					line = reader.readLine();
+					System.out.println(line);
 					if (line == null)
 						throw new LoadSaveException("Id erwartet");
 					int id = Integer.parseInt(line);

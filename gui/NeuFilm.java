@@ -19,12 +19,9 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.zip.DataFormatException;
 
-import data.Film;
-import data.IllegalInputException;
-import data.Verwaltung;
-import data.Watchlist;
+import data.*;
 
-public class NeuFilm extends Dialog implements ActionListener, ItemListener  {
+public class NeuFilm extends Dialog implements ActionListener, ItemListener {
 
 	private Label namelb, regisseurlb, priolb, gesehenlb, jahrlb;
 	private Button speichern, abbrechen;
@@ -32,17 +29,17 @@ public class NeuFilm extends Dialog implements ActionListener, ItemListener  {
 	private Choice prio;
 	private Checkbox gesehen;
 	private Hauptfenster hauptfenster;
-	
-	NeuFilm(Hauptfenster owner){
+
+	NeuFilm(Hauptfenster owner) {
 		super(owner);
 		hauptfenster = owner;
-		setLayout(new GridLayout(7,2));
-		
-		namelb = new Label( "Name: ");
+		setLayout(new GridLayout(7, 2));
+
+		namelb = new Label("Name: ");
 		jahrlb = new Label("Jahr: ");
 		regisseurlb = new Label("Regisseur: ");
 		priolb = new Label("Bewertung: ");
-		gesehenlb = new Label ("Gesehen: ");
+		gesehenlb = new Label("Gesehen: ");
 		speichern = new Button("speichern");
 		abbrechen = new Button("abbrechen");
 		name = new TextField("");
@@ -50,13 +47,14 @@ public class NeuFilm extends Dialog implements ActionListener, ItemListener  {
 		regisseur = new TextField("");
 		gesehen = new Checkbox("ja");
 		prio = new Choice();
-		for (int i = 0; i < 11; ++i) { prio.add(i + "");
+		for (int i = 0; i < 11; ++i) {
+			prio.add(i + "");
 		}
 		prio.select("0");
 		this.add(prio);
-		
+
 		prio.setEnabled(false);
-		
+
 		add(namelb);
 		add(name);
 		add(jahrlb);
@@ -69,52 +67,52 @@ public class NeuFilm extends Dialog implements ActionListener, ItemListener  {
 		add(gesehen);
 		add(speichern);
 		add(abbrechen);
-		
-		
-		this.addWindowListener(new WindowAdapter() {
-			public void windowClosing( WindowEvent e) {
+
+		addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
 				dispose();
 			}
 		});
-		
+
 		speichern.addActionListener(this);
 		abbrechen.addActionListener(this);
-		
 		gesehen.addItemListener(this);
-		
+
 		pack();
 		setLocationRelativeTo(null);
-		setVisible(true);		
+		setVisible(true);
 	}
-	public void actionPerformed( ActionEvent e) {
-		
-		if(e.getSource().equals(speichern)) {
+
+	public void actionPerformed(ActionEvent e) {
+
+		if (e.getSource().equals(speichern)) {
 			try {
-				try {
-					Film temp = new Film( name.getText(), regisseur.getText(), Integer.parseInt(jahr.getText()), gesehen.getState(), Integer.parseInt(prio.getSelectedItem()));
-					Verwaltung.instance().linkDigitalEntertainment( temp );
+					System.out.println(name.getText() + regisseur.getText() + Integer.parseInt(jahr.getText())
+							+ gesehen.getState() + Integer.parseInt(prio.getSelectedItem()));
+					Film temp = new Film(name.getText(), regisseur.getText(), Integer.parseInt(jahr.getText()),
+							gesehen.getState(), Integer.parseInt(prio.getSelectedItem()));
+					Verwaltung.instance().linkDigitalEntertainment(temp);
 					hauptfenster.refreshFilm();
-				} catch (DataFormatException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			} catch (IllegalInputException e1) {
+
+			} catch (DataFormatException | IllegalInputException d) {
 				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				d.printStackTrace();
+			} catch(NumberFormatException n){
+				System.err.println("Keine Zahl als Jahr eingegeben");
 			}
+
 			dispose();
 
 		}
-		if(e.getSource().equals(abbrechen)) {
+
+		if (e.getSource().equals(abbrechen))
 			dispose();
-		}
-		
+
 	}
+
 	public void itemStateChanged(ItemEvent e) {
-		if(e.getSource().equals(gesehen)) {
-				prio.setEnabled(gesehen.getState());
-
+		if (e.getSource().equals(gesehen)) {
+			prio.setEnabled(gesehen.getState());
 		}
 	}
-	
 }
