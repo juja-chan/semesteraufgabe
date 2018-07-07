@@ -19,8 +19,8 @@ public class Store {
 	}
 
 	public void load(Verwaltung unique) throws LoadSaveException {
-		try {
-			BufferedReader reader = new BufferedReader(new FileReader(filename));
+		try (BufferedReader reader = new BufferedReader(new FileReader(filename));){
+			
 			while (!reader.readLine().equals("ende")) {
 				try {
 					unique.linkDigitalEntertainment(new Film(reader.readLine(), reader.readLine(),
@@ -52,7 +52,6 @@ public class Store {
 					throw new LoadSaveException("Bereits vorhandene Watchlist kann nicht geladen werden", i);
 				}
 			}
-
 		} catch (FileNotFoundException e) {
 			throw new LoadSaveException("Datei wurde nicht gefunden", e);
 		} catch (IOException e) {
