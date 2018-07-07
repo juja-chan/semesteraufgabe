@@ -23,99 +23,79 @@ public class NeuerFilm extends Dialog implements ActionListener, ItemListener {
 	private JCheckBox gesehen;
 	private Button speichern;
 	private boolean checkGesehen = false;
-	private int id = 0;
-	private NeuerFilm unique;
-	
-	
-	private NeuerFilm(Hauptfenster owner){
+
+	public NeuerFilm(Hauptfenster owner) {
 		super(owner, true);
 		setTitle("NeuerFilm");
-		setSize(500,500);
-		setLayout(new GridLayout(6,2, 4, 4));
-		
+		setSize(500, 500);
+		setLayout(new GridLayout(6, 2, 4, 4));
+
 		namel = new Label("Name:");
 		add(namel);
-		
+
 		nametf = new TextField(15);
 		add(nametf);
-		
+
 		regisseurl = new Label("Regisseur:");
 		add(regisseurl);
-		
+
 		regisseurtf = new TextField(15);
 		add(regisseurtf);
-		
+
 		jahrl = new Label("Jahr:");
 		add(jahrl);
-	
+
 		jahrtf = new TextField(15);
 		add(jahrtf);
-		
+
 		gesehenl = new Label("Gesehen:");
 		add(gesehenl);
-		
+
 		gesehen = new JCheckBox();
 		add(gesehen);
 		gesehen.addItemListener(this);
-		
+
 		bewertungl = new Label("Bewertung:");
 		add(bewertungl);
-		
+
 		bewertung = new Scrollbar(Scrollbar.HORIZONTAL, 0, 1, 0, 10);
 		add(bewertung);
-		
+
 		speichern = new Button("Speichern");
 		add(speichern);
 		speichern.addActionListener(this);
-		
-		
-		
+
 		this.addWindowListener(new WindowAdapter() {
-		    public void windowClosing(WindowEvent e) {
-			dispose();
-		    }
+			public void windowClosing(WindowEvent e) {
+				dispose();
+			}
 		});
-		
+
 		pack();
-		setVisible(true);	
-	}
-	
-	
-	
-	public static void main(String [] args){
-		new NeuerFilm(null);
+		setVisible(true);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource().equals(speichern)){
-			id++;
-			new Film(nametf.getText(), regisseurtf.getText(), getJahr(), getCheckGesehen(), 3, id);
+		if (e.getSource().equals(speichern)) {
+			new Film(nametf.getText(), regisseurtf.getText(), getJahr(), getCheckGesehen(), 3);
 		}
 	}
-	
-	public int getJahr(){
+
+	public int getJahr() {
 		return Integer.parseInt(jahrtf.getText());
 	}
 
-	public boolean getCheckGesehen(){
+	public boolean getCheckGesehen() {
 		return checkGesehen;
 	}
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-		if(e.getStateChange() == ItemEvent.SELECTED) {
+		if (e.getStateChange() == ItemEvent.SELECTED) {
 			checkGesehen = true;
-        } else {
-        	
-        }
-		
-	}
-	
-	public NeuerFilm instance(){
-		if(unique == null){
-			unique = new NeuerFilm(null);
+		} else {
+
 		}
-		return unique;
 	}
 }

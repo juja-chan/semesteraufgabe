@@ -2,7 +2,11 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Button;
+
 import java.awt.Component;
+
+import java.awt.FileDialog;
+
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Label;
@@ -17,11 +21,11 @@ import java.awt.List;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.zip.DataFormatException;
+
 import java.awt.event.WindowAdapter;
 import java.awt.List;
 import data.*;
-import store.LoadSaveException;
-import store.Store;
+import store.*;
 
 public class Hauptfenster extends Frame implements ItemListener, ActionListener {
 
@@ -153,6 +157,7 @@ public class Hauptfenster extends Frame implements ItemListener, ActionListener 
 	public void addDigitalEntertainment(DigitalEntertainment d) {
 		listfilm.add(d.getName());
 	}
+
 	public void addFilm(Film f) {
 		listwatch.add(f.getName());
 	}
@@ -161,6 +166,41 @@ public class Hauptfenster extends Frame implements ItemListener, ActionListener 
 		for(DigitalEntertainment d: unique){
 			listfilm.add(d.toString());
 			}
+
+	
+	private void onLoad() {
+		FileDialog fd = new FileDialog(this, "Load Parcels...", FileDialog.LOAD);
+		fd.setVisible(true);
+		if (fd.getFile() != null) {
+			String filename = fd.getDirectory() + fd.getFile();
+			try {
+				unique.load(filename);
+				setMessage("Erfolgreich geladen");
+			} catch (LoadSaveException e) {
+				setMessage("Load" + e.getMessage());
+			} 
+		} else
+			setMessage("Keine Datei zum Laden gewählt!");
+	}
+
+	private void onSave() {
+		FileDialog fd = new FileDialog(this, "Save", FileDialog.SAVE);
+		fd.setVisible(true);
+		if (fd.getFile() != null) {
+			String filename = fd.getDirectory() + fd.getFile();
+			try {
+				unique.save(filename);
+				setMessage("Erfolgreich gespeichert");
+			} catch (LoadSaveException e) {
+				setMessage("Speicherfehler: " + e.getMessage());
+			}
+		} else
+			setMessage("Keine Datei zum Speichern gewählt!");
+	}
+
+	private void setMessage(String string) {
+		
+
 	}
 
 

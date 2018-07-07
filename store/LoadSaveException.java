@@ -1,13 +1,11 @@
 package store;
 
-public class LoadSaveException extends Exception{
-	Exception cause;
+public class LoadSaveException extends Exception {
 	public LoadSaveException(String message, Exception cause){
-		super(message);
-		this.cause = cause;
+		super(message, cause);
 	}
 	
-	public Exception getCause(){
-		return cause;
+	public LoadSaveException(String message){
+		super(message);
 	}
 }
