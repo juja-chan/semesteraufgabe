@@ -55,7 +55,7 @@ public class EditWatchlist extends Dialog implements ActionListener{
 		pack();
 	}
 	//Notizen: getselectedItem!
-	
+	 
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource().equals(hinzufuegen)) {
 			

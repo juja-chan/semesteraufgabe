@@ -52,7 +52,7 @@ public class NeuFilm extends Dialog implements ActionListener, ItemListener  {
 		prio = new Choice();
 		for (int i = 0; i < 11; ++i) { prio.add(i + "");
 		}
-		prio.select("1");
+		prio.select("0");
 		this.add(prio);
 		
 		prio.setEnabled(false);
