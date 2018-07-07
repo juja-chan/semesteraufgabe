@@ -4,26 +4,29 @@ import java.util.ArrayList;
 import java.util.zip.DataFormatException;
 
 public class Watchlist {
-	
+
 	private String name;
 	private ArrayList<DigitalEntertainment> inhalt;
 
-	public Watchlist(String name){
+	public Watchlist(String name) throws DataFormatException {
 		super();
+		setName(name);
+		inhalt = new ArrayList<DigitalEntertainment>();
+		System.out.println("hat geklappt");
 	}
-	
+
 	public String getName() {
 		return name;
 	}
 
 	public void setName(String name) throws DataFormatException {
-		if (checkName(name))
-			this.name = name;
-		throw new DataFormatException("zu wenig zeichen");
+		if (!checkName(name))
+			throw new DataFormatException("Anlegen der neuen Watchlist fehlgeschlagen");
+		this.name = name;
 
 	}
-	
-	public boolean checkName(String name){
+
+	public boolean checkName(String name) {
 		if (name == null || name.equals("")) {
 			return false;
 		}
@@ -50,4 +53,5 @@ public class Watchlist {
 	}
 	
 	
+
 }

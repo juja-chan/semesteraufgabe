@@ -20,7 +20,7 @@ public class Store {
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(filename));
 			while (!reader.readLine().equals("ende")) {
-				unique.linkFilm(new Film(reader.readLine(), reader.readLine(), Integer.parseInt(reader.readLine()), Boolean.parseBoolean(reader.readLine()),
+				unique.linkDigitalEntertainment(new Film(reader.readLine(), reader.readLine(), Integer.parseInt(reader.readLine()), Boolean.parseBoolean(reader.readLine()),
 						Integer.parseInt(reader.readLine()), Integer.parseInt(reader.readLine())));
 			}
 			
@@ -54,8 +54,7 @@ public class Store {
 			ArrayList<Watchlist> watchlist = unique.getAlleWatchlists();
 			for (int i = 0; i < watchlist.size(); i++) {
 				writer.println("watchlist");
-				writer.println(watchlist.get(i).getName());
-				writer.println(watchlist.get(i).getId());
+				writer.println(Integer.toString(watchlist.get(i).getDigitalEntertainmente().get(index)));
 			}
 			writer.println("ende");
 		} catch (IOException e) {
