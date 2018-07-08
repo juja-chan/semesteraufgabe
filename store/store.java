@@ -118,12 +118,12 @@ public class Store {
 				writer.println(Integer.toString(d.getId()));
 			}
 			writer.println("ende");
-			ArrayList<Watchlist> watchlist = unique.getAlleWatchlists();
-			for (int i = 0; i < watchlist.size(); i++) {
+			ArrayList<Watchlist> alleWatchlist = unique.getAlleWatchlists();
+			for (int i = 0; i < alleWatchlist.size(); i++) {
 				writer.println("watchlist");
-				writer.println(watchlist.get(i).getName());
-				for (int j = 0; j < watchlist.get(i).getDigitalEntertainmente().size(); j++)
-					writer.println(watchlist.get(i).getDigitalEntertainmente().get(i).getId());
+				writer.println(alleWatchlist.get(i).getName());
+				for (DigitalEntertainment d: alleWatchlist.get(i))
+					writer.println(d.getId());
 			}
 			writer.println("ende");
 		} catch (IOException e) {

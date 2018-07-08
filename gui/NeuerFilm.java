@@ -17,7 +17,7 @@ import java.util.zip.DataFormatException;
 
 import data.*;
 
-public class EditFilm extends Dialog implements ActionListener, ItemListener {
+public class NeuerFilm extends Dialog implements ActionListener, ItemListener {
 
 	/**
 	 * 
@@ -29,26 +29,23 @@ public class EditFilm extends Dialog implements ActionListener, ItemListener {
 	private Checkbox gesehen;
 	private Hauptfenster owner;
 
-	EditFilm(Hauptfenster owner, DigitalEntertainment digi) {
+	NeuerFilm(Hauptfenster owner) {
 		super(owner);
 		this.owner = owner;
 		setLayout(new GridLayout(6, 2, 5, 5));
 		abbrechen = new Button("Abbrechen");
 		speichern = new Button("Speichern");
-		name = new TextField(digi.getName());
-		jahr = new TextField(Integer.toString(digi.getJahr()));
-		regisseur = new TextField(digi.getRegisseur());
+		name = new TextField("");
+		jahr = new TextField("");
+		regisseur = new TextField("");
 		gesehen = new Checkbox("ja");
-		gesehen.setState(digi.isGesehen());
 		bewertung = new Choice();
 
 		bewertung.add("");
 		for (int i = 1; i <= 10; i++)
 			bewertung.add(i + "");
-		System.out.println(digi.getBewertung());
-		bewertung.select(digi.getBewertung());
-		if(!digi.isGesehen())
-			bewertung.setEnabled(false);
+		bewertung.select("");
+		bewertung.setEnabled(false);
 
 		add(new Label("Name: "));
 		add(name);
@@ -73,21 +70,30 @@ public class EditFilm extends Dialog implements ActionListener, ItemListener {
 		abbrechen.addActionListener(this);
 		gesehen.addItemListener(this);
 
+		pack();
 		setLocationRelativeTo(null);
 		setVisible(true);
-		pack();
 	}
 
 	public void actionPerformed(ActionEvent e) {
 
 		if (e.getSource().equals(speichern)) {
 			try {
-				System.out.println(name.getText() + regisseur.getText() + Integer.parseInt(jahr.getText())
-						+ gesehen.getState() + Integer.parseInt(bewertung.getSelectedItem()));
-				Film temp = new Film(name.getText(), regisseur.getText(), Integer.parseInt(jahr.getText()),
-						gesehen.getState(), Integer.parseInt(bewertung.getSelectedItem()));
+
+				Film temp;
+				System.out.println(gesehen.getState());
+				if (!gesehen.getState())
+					temp = new Film(name.getText(), regisseur.getText(), Integer.parseInt(jahr.getText()),
+							gesehen.getState(), 0);
+				else if(bewertung.getSelectedItem().equals(""))
+					throw new DataFormatException("Bitte Bewerten!");
+				else
+					temp = new Film(name.getText(), regisseur.getText(), Integer.parseInt(jahr.getText()),
+							gesehen.getState(), Integer.parseInt(bewertung.getSelectedItem()));
+
 				Verwaltung.instance().linkDigitalEntertainment(temp);
 				owner.refreshFilm();
+				owner.setMessage("Film erfolgreich angelegt");
 				dispose();
 
 			} catch (DataFormatException | IllegalInputException d) {

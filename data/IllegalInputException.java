@@ -1,7 +1,7 @@
 package data;
 
 /**
- * Ausnahme um Anzuzeigen, dass ein Benutzer ungÃ¼ltige Attributwerte eingegeben
+ * Ausnahme um Anzuzeigen, dass ein Benutzer ungültige Attributwerte eingegeben
  * hat, welche Datenstrukturinvarianten widersprechen
  * 
  * @author derBe
@@ -16,7 +16,7 @@ public class IllegalInputException extends Exception {
      * @param message
      *            die Fehlernachricht
      * @param input
-     *            der vom Benutzer Ã¼bergebene ungÃ¼ltige Wert in String-Form
+     *            der vom Benutzer übergebene ungültige Wert in String-Form
      */
     public IllegalInputException(String message, String input) {
 	super(message + ": " + input);

@@ -33,15 +33,13 @@ public abstract class DigitalEntertainment {
 
 	public void setName(String name) throws DataFormatException {
 		if (!checkName(name))
-			throw new DataFormatException("zu wenig zeichen");
+			throw new DataFormatException("Zu wenig zeichen");
 		this.name = name;
 
 	}
 
 	public boolean checkName(String name) {
-		if (name == null || name.equals(""))
-			return false;
-		return true;
+		return (name == null || name.equals("")) ? false : true;
 	}
 
 	public String getRegisseur() {
@@ -50,14 +48,12 @@ public abstract class DigitalEntertainment {
 
 	public void setRegisseur(String regisseur) throws DataFormatException {
 		if (!checkRegisseur(regisseur))
-			throw new DataFormatException("zu wenig zeichen");
+			throw new DataFormatException("Zu wenig zeichen");
 		this.regisseur = regisseur;
 	}
 
 	public boolean checkRegisseur(String regisseur) {
-		if (regisseur == null || regisseur.equals(""))
-			return false;
-		return true;
+		return (regisseur == null || regisseur.equals("")) ? false : true;
 	}
 
 	public int getJahr() {
@@ -66,15 +62,13 @@ public abstract class DigitalEntertainment {
 
 	public void setJahr(int jahr) throws DataFormatException {
 		if (!checkJahr(jahr))
-			throw new DataFormatException("Film wurden damals noch nicht erfunden - späteres Jahr angeben");
+			throw new DataFormatException("Filme wurden damals noch nicht erfunden - späteres Jahr angeben");
 		this.jahr = jahr;
 
 	}
 
 	public boolean checkJahr(int jahr) {
-		if (jahr < 1895)
-			return false;
-		return true;
+		return (jahr < 1895) ? false : true;
 	}
 
 	public boolean isGesehen() {
@@ -91,15 +85,28 @@ public abstract class DigitalEntertainment {
 
 	public void setBewertung(int bewertung) throws DataFormatException {
 		if (!checkBewertung(bewertung))
-			throw new DataFormatException("falsche bewertung");
+			throw new DataFormatException("Bewertung zwischen 1 und 10 angeben");
 		this.bewertung = bewertung;
-
 	}
 
 	public boolean checkBewertung(int bewertung) {
-		if (bewertung < 0 || bewertung > 10)
-			return false;
-		return true;
+		return (bewertung < 0 || bewertung > 10) ? false : true;
+	}
+
+	public String toString() {
+		return getName() + " (Regisseur: " + getRegisseur() + " - Jahr: " + getJahr() + "Bewertung: " + getBewertung()
+				+ "Gesehen: " + isGesehen() + ")";
+	}
+
+	public boolean equals(Object o) {
+		if (o != null) {
+			if (o.getClass().equals(getClass())) {
+				DigitalEntertainment d = (DigitalEntertainment) o;
+				return (d.getName().equals(getName()) && d.getRegisseur().equals(getRegisseur())
+						&& d.getBewertung() == getBewertung() && d.getJahr() == getJahr());
+			}
+		}
+		return false;
 	}
 
 }

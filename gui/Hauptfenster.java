@@ -2,9 +2,6 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Button;
-
-import java.awt.Component;
-
 import java.awt.FileDialog;
 
 import java.awt.Frame;
@@ -15,12 +12,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-
-import java.awt.List;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.zip.DataFormatException;
+import java.awt.List;
+import java.awt.Menu;
+import java.awt.MenuBar;
+import java.awt.MenuItem;
+import java.awt.Panel;
+import java.awt.TextField;
 
 import java.awt.event.WindowAdapter;
 import data.*;
@@ -28,118 +26,131 @@ import store.*;
 
 public class Hauptfenster extends Frame implements ItemListener, ActionListener {
 
-	private Button bFilm;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private Button nFilm;
 	private Button nList;
-	private Button Obsp;
-	private Button storeladen;
-	private List listfilm;
-	private List listwatch;
-	private Label lFilm;
-	private Label lList;
-
-	Verwaltung unique;
+	private List listFilm;
+	private List listWatch;
+	private Label labelList;
+	private Label labelFilm;
+	private Verwaltung unique;
+	private TextField statusTextField;
 	private Film film;
 
 	public Hauptfenster() {
 
-		super("Bloedes Fenster");
-		setLayout(new GridLayout(5, 2, 10, 10));
+		super("Filme und Watchlisten");
+
+		MenuBar menubar = new MenuBar();
+		Menu menu = new Menu("File");
+		MenuItem loadMI = new MenuItem("Load...");
+		MenuItem saveMI = new MenuItem("Save...");
+
 		unique = Verwaltung.instance();
-		bFilm = new Button("neuer Film");
-		nList = new Button("neue Watchlist anglegen");
-		lFilm = new Label("unsortierte Filme");
-		lList = new Label("Watchlist");
-		try {
-			film = new Film("TestFilm1", "reg", 1995, true, 4);
-		} catch (DataFormatException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
-		Obsp = new Button("alle Objekte speichern");
-		storeladen = new Button("Verwaltung laden");
+		statusTextField = new TextField();
+		nFilm = new Button("Neuer Film");
+		nList = new Button("Neue Watchlist");
+		listFilm = new List(5, false);
+		listWatch = new List(5, false);
+		labelList = new Label("Watchlisten");
+		labelFilm = new Label("Unsortierte Filme");
 
-		try {
-			unique.linkDigitalEntertainment(film);
-		} catch (IllegalInputException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		for (DigitalEntertainment d : unique) {
-			System.out.println("print Name: " + d.getName());
+		Panel links = new Panel();
+		Panel rechts = new Panel();
+		Panel oben = new Panel();
 
-		}
+		links.setLayout(new BorderLayout());
+		rechts.setLayout(new BorderLayout());
+		oben.setLayout(new GridLayout(1, 2, 5, 5));
 
-		listfilm = new List(5, false);
+		labelFilm.setAlignment(Label.CENTER);
+		labelList.setAlignment(Label.CENTER);
 
-		listwatch = new List(5, false);
-	
-
-		add(lFilm);
-		add(lList);
-		add(listfilm);
-		add(listwatch);
-		add(bFilm);
-		add(nList);
-		add(Obsp);
-		add(storeladen);
-
-		listfilm.addItemListener(this);
-		listwatch.addItemListener(this);
+		listFilm.addItemListener(this);
+		listWatch.addItemListener(this);
 		nList.addActionListener(this);
-		bFilm.addActionListener(this);
-		Obsp.addActionListener(this);
-		storeladen.addActionListener(this);
+		nFilm.addActionListener(this);
+		statusTextField.setEditable(false);
+
+		loadMI.addActionListener(this);
+		saveMI.addActionListener(this);
+
+		links.add(labelFilm, BorderLayout.NORTH);
+		links.add(listFilm, BorderLayout.CENTER);
+		links.add(nFilm, BorderLayout.SOUTH);
+		rechts.add(labelList, BorderLayout.NORTH);
+		rechts.add(listWatch, BorderLayout.CENTER);
+		rechts.add(nList, BorderLayout.SOUTH);
+
+		menu.add(loadMI);
+		menu.add(saveMI);
+		menubar.add(menu);
+		setMenuBar(menubar);
+
+		oben.add(links);
+		oben.add(rechts);
+		add(oben, BorderLayout.NORTH);
+		add(statusTextField, BorderLayout.SOUTH);
 
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				dispose();
 			}
 		});
+
 		setLocationRelativeTo(null);
 		pack();
 		setVisible(true);
 
+		try {
+			film = new Film("Star Wars", "George Lucas", 1977, true, 10);
+			Film s = new Film("Der weisse Hai", "S. Spielberg", 1978, true, 8);
+			unique.linkDigitalEntertainment(film);
+			unique.linkDigitalEntertainment(s);
+			refreshFilm();
+		} catch (DataFormatException | IllegalInputException e) {
+			setMessage(e.getMessage());
+		}
+
 	}
 
 	public void itemStateChanged(ItemEvent e) {
-		if (e.getSource().equals(listwatch)) {
+		if (e.getSource().equals(listWatch)) {
 			for (int i = 0; i < unique.getAlleWatchlists().size(); i++) {
-				System.out.println(unique.getAlleWatchlists().get(i).getName() + "  "+listwatch.getSelectedItem());
-				if (unique.getAlleWatchlists().get(i).getName().equals(listwatch.getSelectedItem())) {				
+				if (unique.getWatchlist(i).getName().equals(listWatch.getSelectedItem()))
 					new EditWatchlist(this, unique, unique.getAlleWatchlists().get(i));
-				}
 			}
+		} else {
+			new EditFilm(this, unique.searchDigitalEntertainment(listFilm.getSelectedIndex()));
 		}
 	}
 
 	public void actionPerformed(ActionEvent e1) {
-		if (e1.getSource().equals(nList)) {
-			new NeueWatchlist(this);
-		}
-		if (e1.getSource().equals(Obsp)) 
+
+		if (e1.getActionCommand().equals("Save..."))
 			onSave();
-		if (e1.getSource().equals(bFilm)) {
-			new NeuFilm(this);
-		}
-		if (e1.getSource().equals(storeladen))
+		else if (e1.getActionCommand().equals("Load..."))
 			onLoad();
+		else if (e1.getSource().equals(nFilm))
+			new NeuerFilm(this);
+		else if (e1.getSource().equals(nList))
+			new NeueWatchlist(this);
 	}
 
-	public void addWatchlist(Watchlist w) {
-		listwatch.add(w.getName());
+	public void refreshWatchlist() {
+		listWatch.removeAll();
+		for (int i = 0; unique.getAlleWatchlists().size() > i; i++)
+			listWatch.add(unique.getWatchlist(i).getName());
 	}
 
-	public void addDigitalEntertainment(DigitalEntertainment d) {
-		listfilm.add(d.getName());
-	}
-	
 	public void refreshFilm() {
-		listfilm.removeAll();
-		for(DigitalEntertainment d: unique){
-			listfilm.add(d.getName());
-			}
+		listFilm.removeAll();
+		for (DigitalEntertainment d : unique)
+			listFilm.add(d.getName());
 	}
-	
 
 	private void onLoad() {
 		FileDialog fd = new FileDialog(this, "Load Parcels...", FileDialog.LOAD);
@@ -149,11 +160,10 @@ public class Hauptfenster extends Frame implements ItemListener, ActionListener 
 			try {
 				unique.load(filename);
 				setMessage("Erfolgreich geladen");
-				for(DigitalEntertainment d: unique) {
-					System.out.println(d.getName());
-				}
+				for (DigitalEntertainment d : unique)
+					setMessage(d.getName());
 			} catch (LoadSaveException e) {
-				System.err.println(e.getMessage());
+				setMessage(e.getMessage());
 			}
 			refreshFilm();
 		} else
@@ -175,8 +185,10 @@ public class Hauptfenster extends Frame implements ItemListener, ActionListener 
 			setMessage("Keine Datei zum Speichern gewählt!");
 	}
 
-	private void setMessage(String string) {
-
+	public void setMessage(String s) {
+		if (s != null)
+			statusTextField.setText(s);
+		else
+			statusTextField.setText("");
 	}
-
 }

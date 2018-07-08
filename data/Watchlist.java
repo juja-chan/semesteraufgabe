@@ -1,17 +1,16 @@
 package data;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.zip.DataFormatException;
 
-public class Watchlist {
+public class Watchlist implements Iterable<DigitalEntertainment>{
 	private String name;
-	private ArrayList<DigitalEntertainment> inhalt;
+	private ArrayList<DigitalEntertainment> alleDigitalEntertainments;
 
 	public Watchlist(String name) throws DataFormatException {
-		super();
 		setName(name);
-		inhalt = new ArrayList<DigitalEntertainment>();
-		System.out.println("hat geklappt");
+		alleDigitalEntertainments = new ArrayList<DigitalEntertainment>();
 	}
 
 	public String getName() {
@@ -20,37 +19,40 @@ public class Watchlist {
 
 	public void setName(String name) throws DataFormatException {
 		if (!checkName(name))
-			throw new DataFormatException("Anlegen der neuen Watchlist fehlgeschlagen");
+			throw new DataFormatException("Name der Watchlist darf nicht leer sein");
 		this.name = name;
-
 	}
 
 	public boolean checkName(String name) {
-		if (name == null || name.equals("")) {
-			return false;
-		}
-		return true;
+		return (name == null || name.equals("")) ? false : true;
 	}
 
 	public void linkDigitalEntertainment(DigitalEntertainment f) throws IllegalInputException {
-		if (this.inhalt.contains(f))
+		if (alleDigitalEntertainments.contains(f))
 			throw new IllegalInputException("DigitalEntertainment schon vorhanden", f.getName());
-		this.inhalt.add(f);
+		alleDigitalEntertainments.add(f);
 
 	}
 
 	public void unlinkDigitalEntertainment(DigitalEntertainment f) throws IllegalInputException {
-		if (this.inhalt.contains(f))
+		if (alleDigitalEntertainments.contains(f))
 			throw new IllegalInputException("DigitalEntertainment nicht vorhanden", f.getName());
-		this.inhalt.remove(f);
+		alleDigitalEntertainments.remove(f);
 	}
 
-	public ArrayList<DigitalEntertainment> getDigitalEntertainmente() {
-		ArrayList<DigitalEntertainment> copy = new ArrayList<DigitalEntertainment>();
-		for (int i = 0; i < inhalt.size(); i++) {
-			copy.add(inhalt.get(i));
-		}
-		return copy;
+	
+
+	@Override
+	public Iterator<DigitalEntertainment> iterator() {
+		return alleDigitalEntertainments.iterator();
 	}
+	
+	public String toString() {
+		String ausgabe = new String(getName());
+		for (DigitalEntertainment d: this)
+			ausgabe.concat(Integer.toString(d.getId()));
+		return ausgabe;
+	}
+
 
 }

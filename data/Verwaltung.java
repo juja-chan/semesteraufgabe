@@ -5,12 +5,12 @@ import java.util.Iterator;
 
 import store.*;
 
-public class Verwaltung implements Iterable<DigitalEntertainment>{
+public class Verwaltung implements Iterable<DigitalEntertainment> {
 
 	private static Verwaltung unique = null;
 	private ArrayList<DigitalEntertainment> alleDigitalEntertainmente;
 	private ArrayList<Watchlist> alleWatchlists;
-	int id = 0;
+	private static int id = 0;
 	private Store store = null;
 
 	private Verwaltung() {
@@ -24,34 +24,34 @@ public class Verwaltung implements Iterable<DigitalEntertainment>{
 		return unique;
 	}
 
-	public void linkDigitalEntertainment(DigitalEntertainment f) throws IllegalInputException {
-		if (this.alleDigitalEntertainmente.contains(f))
+	public void linkDigitalEntertainment(DigitalEntertainment f) throws IllegalInputException {	
+		if (f == null || this.alleDigitalEntertainmente.contains(f))
 			throw new IllegalInputException("DigitalEntertainment schon vorhanden", f.getName());
-		this.alleDigitalEntertainmente.add(f);
+		alleDigitalEntertainmente.add(f);
 		f.setId(id);
 		id++;
 	}
 
 	public void linkWatchlist(Watchlist w) throws IllegalInputException {
-		if (this.alleWatchlists.contains(w))
+		if (w == null || this.alleWatchlists.contains(w))
 			throw new IllegalInputException("Watchlist schon vorhanden", w.getName());
 		this.alleWatchlists.add(w);
 	}
 
 	public void unlinkDigitalEntertainment(DigitalEntertainment f) throws IllegalInputException {
-		if (!this.alleDigitalEntertainmente.contains(f))
+		if (f == null || !alleDigitalEntertainmente.contains(f))
 			throw new IllegalInputException("DigitalEntertainment nicht vorhanden", f.getName());
-		this.alleDigitalEntertainmente.remove(f);
+		alleDigitalEntertainmente.remove(f);
 	}
 
 	public void unlinkWatchlist(DigitalEntertainment w) throws IllegalInputException {
-		if (!this.alleWatchlists.contains(w))
+		if (w == null || !this.alleWatchlists.contains(w))
 			throw new IllegalInputException("Watchlist nicht vorhanden", w.getName());
-		this.alleWatchlists.remove(w);
+		alleWatchlists.remove(w);
 	}
 
 	public Iterator<DigitalEntertainment> iterator() {
-		return this.alleDigitalEntertainmente.iterator();
+		return alleDigitalEntertainmente.iterator();
 	}
 
 	public ArrayList<Watchlist> getAlleWatchlists() {
@@ -59,6 +59,10 @@ public class Verwaltung implements Iterable<DigitalEntertainment>{
 		for (int i = 0; i < alleWatchlists.size(); i++)
 			copy.add(alleWatchlists.get(i));
 		return copy;
+	}
+
+	public Watchlist getWatchlist(int index) {
+		return alleWatchlists.get(index);
 	}
 
 	public DigitalEntertainment searchDigitalEntertainment(int id) {
@@ -69,7 +73,7 @@ public class Verwaltung implements Iterable<DigitalEntertainment>{
 		return null;
 	}
 
-	public void load(String filename) throws LoadSaveException{
+	public void load(String filename) throws LoadSaveException {
 		store = new Store(filename);
 		ArrayList<Watchlist> wBackup = new ArrayList<Watchlist>(alleWatchlists);
 		alleWatchlists.clear();
@@ -84,10 +88,9 @@ public class Verwaltung implements Iterable<DigitalEntertainment>{
 		}
 	}
 
-	public void save(String filename) throws LoadSaveException{
+	public void save(String filename) throws LoadSaveException {
 		store = new Store(filename);
 		store.save(unique);
-		
 	}
 
 }
