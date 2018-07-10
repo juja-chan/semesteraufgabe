@@ -33,7 +33,7 @@ public abstract class DigitalEntertainment {
 
 	public void setName(String name) throws DataFormatException {
 		if (!checkName(name))
-			throw new DataFormatException("Zu wenig zeichen");
+			throw new DataFormatException("Bitte Name angeben");
 		this.name = name;
 
 	}
@@ -48,7 +48,7 @@ public abstract class DigitalEntertainment {
 
 	public void setRegisseur(String regisseur) throws DataFormatException {
 		if (!checkRegisseur(regisseur))
-			throw new DataFormatException("Zu wenig zeichen");
+			throw new DataFormatException("Bitte Regisseur angeben");
 		this.regisseur = regisseur;
 	}
 
@@ -91,22 +91,6 @@ public abstract class DigitalEntertainment {
 
 	public boolean checkBewertung(int bewertung) {
 		return (bewertung < 0 || bewertung > 10) ? false : true;
-	}
-
-	public String toString() {
-		return getName() + " (Regisseur: " + getRegisseur() + " - Jahr: " + getJahr() + "Bewertung: " + getBewertung()
-				+ "Gesehen: " + isGesehen() + ")";
-	}
-
-	public boolean equals(Object o) {
-		if (o != null) {
-			if (o.getClass().equals(getClass())) {
-				DigitalEntertainment d = (DigitalEntertainment) o;
-				return (d.getName().equals(getName()) && d.getRegisseur().equals(getRegisseur())
-						&& d.getBewertung() == getBewertung() && d.getJahr() == getJahr());
-			}
-		}
-		return false;
 	}
 
 }

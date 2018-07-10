@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 
 import data.*;
 
@@ -26,20 +27,22 @@ public class EditWatchlist extends Dialog implements ActionListener {
 	private Button loeschen;
 	private Label labelList;
 	private Label labelFilm;
-	private Verwaltung unique;
+	private FilmContainer fcon;
 	private Watchlist wl;
 	private Hauptfenster owner;
+	private ArrayList<Film> inwatch;
+	private ArrayList<Film> filme;
 
-	public EditWatchlist(Hauptfenster owner, Verwaltung unique, Watchlist wl) {
-		super(owner);
-		setTitle("Filme einer Watchlist hinzufuegen");
+	public EditWatchlist(Hauptfenster owner, Watchlist wl) {
+		super(owner, "Watchlist verändern", true);
 		setLayout(new GridLayout(1, 2, 10, 5));
 
 		this.owner = owner;
 		this.wl = wl;
-		this.unique = unique;
-		hinzufuegen = new Button("hinzufuegen");
-		loeschen = new Button("loeschen");
+		inwatch = wl.getAlleFilme();
+		fcon = FilmContainer.instance();
+		hinzufuegen = new Button("Hinzufuegen");
+		loeschen = new Button("Entfernen");
 		listFilm = new List(5, false);
 		listWatch = new List(5, false);
 		labelList = new Label("Filme der Watchlist");
@@ -51,8 +54,7 @@ public class EditWatchlist extends Dialog implements ActionListener {
 		Panel links = new Panel();
 		Panel rechts = new Panel();
 
-		refreshWatchlist();
-		refreshFilm();
+		refresh();
 
 		links.setLayout(new BorderLayout());
 		rechts.setLayout(new BorderLayout());
@@ -75,40 +77,47 @@ public class EditWatchlist extends Dialog implements ActionListener {
 				dispose();
 			}
 		});
-
-		setLocationRelativeTo(owner);
-		setVisible(true);
 		pack();
+		setLocationRelativeTo(null);
+		setVisible(true);
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource().equals(loeschen)) {
-			/*
-			 * Wird nicht funktionieren, du musst einen Weg finden den Film aus
-			 * der Liste herauszulesen try {
-			 * wl.unlinkDigitalEntertainment(unique.searchDigitalEntertainment(
-			 * listWatch.getSelectedIndex())); } catch (IllegalInputException
-			 * i){ owner.setMessage(i.getMessage()); }
-			 */
+		if (e.getActionCommand().equals("Entfernen")) {
+			try {
+				Film f = inwatch.get(listWatch.getSelectedIndex());
+				wl.unlinkFilm(f);
+				inwatch.remove(f);
+				refresh();
+			} catch (IllegalInputException i) {
+				owner.setMessage("Entfernen des Films fehlgeschlagen: " + i.getMessage());
+			} catch (ArrayIndexOutOfBoundsException a) {
+				owner.setMessage("Bitte einen Film auswählen");
+			}
 		} else {
 			try {
-				wl.linkDigitalEntertainment(unique.searchDigitalEntertainment(listFilm.getSelectedIndex()));
+				Film f = filme.get(listFilm.getSelectedIndex());
+				wl.linkFilm(f);
+				inwatch.add(f);
+				listFilm.remove(listFilm.getSelectedItem());
+				listWatch.add(f.getName());
 			} catch (IllegalInputException i) {
-				owner.setMessage(i.getMessage());
+				owner.setMessage("Hinzufügen des Films fehlgeschlagen: " + i.getMessage());
+			} catch (ArrayIndexOutOfBoundsException a) {
+				owner.setMessage("Bitte einen Film auswählen");
 			}
 		}
 	}
 
-	public void refreshWatchlist() {
+	public void refresh() {
 		listWatch.removeAll();
-		for (int i = 0; unique.getAlleWatchlists().size() > i; i++)
-			listWatch.add(unique.getWatchlist(i).getName());
-	}
-
-	public void refreshFilm() {
 		listFilm.removeAll();
-		for (DigitalEntertainment d : unique)
-			listFilm.add(d.getName());
+		filme = fcon.getAlleFilme();
+		for (int i = 0; i < inwatch.size(); i++)
+			listWatch.add(inwatch.get(i).getName());
+		for (int i = 0; i < inwatch.size(); i++)
+			filme.remove(inwatch.get(i));
+		for (int i = 0; i < filme.size(); i++)
+			listFilm.add(filme.get(i).getName());
 	}
-
 }

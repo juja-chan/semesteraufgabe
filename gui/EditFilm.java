@@ -4,6 +4,7 @@ import java.awt.Button;
 import java.awt.Checkbox;
 import java.awt.Choice;
 import java.awt.Dialog;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Label;
 import java.awt.TextField;
@@ -23,32 +24,33 @@ public class EditFilm extends Dialog implements ActionListener, ItemListener {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private Button speichern, abbrechen;
 	private TextField name, regisseur, jahr;
 	private Choice bewertung;
 	private Checkbox gesehen;
 	private Hauptfenster owner;
+	private Film film;
 
-	EditFilm(Hauptfenster owner, DigitalEntertainment digi) {
-		super(owner);
+	public EditFilm(Hauptfenster owner, Film film) {
+		super(owner, "Film verändern", true);
 		this.owner = owner;
+		this.film = film;
 		setLayout(new GridLayout(6, 2, 5, 5));
-		abbrechen = new Button("Abbrechen");
-		speichern = new Button("Speichern");
-		name = new TextField(digi.getName());
-		jahr = new TextField(Integer.toString(digi.getJahr()));
-		regisseur = new TextField(digi.getRegisseur());
+		this.setSize(200,300);
+
+		Button abbrechen = new Button("Abbrechen");
+		Button speichern = new Button("Speichern");
+		name = new TextField(film.getName());
+		jahr = new TextField(Integer.toString(film.getJahr()));
+		regisseur = new TextField(film.getRegisseur());
 		gesehen = new Checkbox("ja");
-		gesehen.setState(digi.isGesehen());
+		gesehen.setState(film.isGesehen());
 		bewertung = new Choice();
 
 		bewertung.add("");
 		for (int i = 1; i <= 10; i++)
 			bewertung.add(i + "");
-		System.out.println(digi.getBewertung());
-		bewertung.select(digi.getBewertung());
-		if(!digi.isGesehen())
-			bewertung.setEnabled(false);
+		bewertung.select(film.getBewertung());
+		bewertung.setEnabled(film.isGesehen());
 
 		add(new Label("Name: "));
 		add(name);
@@ -75,30 +77,34 @@ public class EditFilm extends Dialog implements ActionListener, ItemListener {
 
 		setLocationRelativeTo(null);
 		setVisible(true);
-		pack();
+		this.pack();
 	}
 
 	public void actionPerformed(ActionEvent e) {
 
-		if (e.getSource().equals(speichern)) {
+		if (e.getActionCommand().equals("Speichern")) {
 			try {
-				System.out.println(name.getText() + regisseur.getText() + Integer.parseInt(jahr.getText())
-						+ gesehen.getState() + Integer.parseInt(bewertung.getSelectedItem()));
-				Film temp = new Film(name.getText(), regisseur.getText(), Integer.parseInt(jahr.getText()),
-						gesehen.getState(), Integer.parseInt(bewertung.getSelectedItem()));
-				Verwaltung.instance().linkDigitalEntertainment(temp);
-				owner.refreshFilm();
-				dispose();
+				film.setName(name.getText());
+				film.setRegisseur(regisseur.getText());
+				film.setJahr(Integer.parseInt(jahr.getText()));
+				film.setGesehen(gesehen.getState());
+				if (!gesehen.getState())
+					film.setBewertung(0);
+				else if (bewertung.getSelectedItem().equals(""))
+					throw new DataFormatException("Bitte Bewerten!");
+				else
+					film.setBewertung(Integer.parseInt(bewertung.getSelectedItem()));
 
-			} catch (DataFormatException | IllegalInputException d) {
+				owner.setMessage("Film erfolgreich verändert");
+				dispose();
+			} catch (DataFormatException d) {
 				owner.setMessage(d.getMessage());
 			} catch (NumberFormatException n) {
 				owner.setMessage("Keine Zahl als Jahr eingegeben");
 			}
-		}
-
-		if (e.getSource().equals(abbrechen))
+		} else if (e.getActionCommand().equals("Abbrechen"))
 			dispose();
+
 	}
 
 	public void itemStateChanged(ItemEvent e) {

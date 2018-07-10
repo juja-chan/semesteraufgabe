@@ -23,18 +23,17 @@ public class NeuerFilm extends Dialog implements ActionListener, ItemListener {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private Button speichern, abbrechen;
 	private TextField name, regisseur, jahr;
 	private Choice bewertung;
 	private Checkbox gesehen;
 	private Hauptfenster owner;
 
 	NeuerFilm(Hauptfenster owner) {
-		super(owner);
+		super(owner,"Neuer Film", true);
 		this.owner = owner;
 		setLayout(new GridLayout(6, 2, 5, 5));
-		abbrechen = new Button("Abbrechen");
-		speichern = new Button("Speichern");
+		Button abbrechen = new Button("Abbrechen");
+		Button speichern = new Button("Speichern");
 		name = new TextField("");
 		jahr = new TextField("");
 		regisseur = new TextField("");
@@ -77,21 +76,19 @@ public class NeuerFilm extends Dialog implements ActionListener, ItemListener {
 
 	public void actionPerformed(ActionEvent e) {
 
-		if (e.getSource().equals(speichern)) {
+		if (e.getActionCommand().equals("Speichern")) {
 			try {
-
 				Film temp;
-				System.out.println(gesehen.getState());
 				if (!gesehen.getState())
 					temp = new Film(name.getText(), regisseur.getText(), Integer.parseInt(jahr.getText()),
 							gesehen.getState(), 0);
-				else if(bewertung.getSelectedItem().equals(""))
+				else if (bewertung.getSelectedItem().equals(""))
 					throw new DataFormatException("Bitte Bewerten!");
 				else
 					temp = new Film(name.getText(), regisseur.getText(), Integer.parseInt(jahr.getText()),
 							gesehen.getState(), Integer.parseInt(bewertung.getSelectedItem()));
 
-				Verwaltung.instance().linkDigitalEntertainment(temp);
+				FilmContainer.instance().linkFilm(temp);
 				owner.refreshFilm();
 				owner.setMessage("Film erfolgreich angelegt");
 				dispose();
@@ -101,9 +98,7 @@ public class NeuerFilm extends Dialog implements ActionListener, ItemListener {
 			} catch (NumberFormatException n) {
 				owner.setMessage("Keine Zahl als Jahr eingegeben");
 			}
-		}
-
-		if (e.getSource().equals(abbrechen))
+		} else if (e.getActionCommand().equals("Abbrechen"))
 			dispose();
 	}
 

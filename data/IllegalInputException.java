@@ -8,17 +8,27 @@ package data;
  *
  */
 public class IllegalInputException extends Exception {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    /**
-     * Konstruiert eine Ausnahme mit spezifischer Fehlernachricht
-     * 
-     * @param message
-     *            die Fehlernachricht
-     * @param input
-     *            der vom Benutzer übergebene ungültige Wert in String-Form
-     */
-    public IllegalInputException(String message, String input) {
-	super(message + ": " + input);
-    }
+	/**
+	 * Konstruiert eine Ausnahme mit spezifischer Fehlernachricht
+	 * 
+	 * @param message
+	 *            die Fehlernachricht
+	 * @param input
+	 *            der vom Benutzer übergebene ungültige Wert in String-Form
+	 */
+	public IllegalInputException(String message, String input) {
+		super(message + ": " + input);
+	}
+
+	/**
+	 * Konstruiert eine Ausnahme mit spezifischer Fehlernachricht
+	 * 
+	 * @param message
+	 *            die Fehlernachricht
+	 */
+	public IllegalInputException(String message) {
+		super(message);
+	}
 }

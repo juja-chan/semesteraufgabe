@@ -11,9 +11,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.zip.DataFormatException;
 
-import data.Watchlist;
-import data.IllegalInputException;
-import data.Verwaltung;
+import data.*;
 
 public class NeueWatchlist extends Dialog implements ActionListener {
 
@@ -22,21 +20,15 @@ public class NeueWatchlist extends Dialog implements ActionListener {
 	 */
 	private static final long serialVersionUID = 1L;
 	private TextField nametf;
-	private Button speichern;
-	private Button abbrechen;
 	private Hauptfenster owner;
-	private Verwaltung unique;
 
 	public NeueWatchlist(Hauptfenster owner) {
-		super(owner, "nList");
+		super(owner, "Neue Watchlist", true);
 		this.owner = owner;
 		setLayout(new GridLayout(2, 2));
-		setTitle("Anlegen einer Watchlist");
-		nametf = new TextField("");
-		speichern = new Button("Speichern");
-		abbrechen = new Button("Abbrechen");
-		unique = Verwaltung.instance();
-
+		nametf = new TextField();
+		Button speichern = new Button("Speichern");
+		Button abbrechen = new Button("Abbrechen");
 		add(new Label("Name der Watchlist: "));
 		add(nametf);
 		add(speichern);
@@ -56,10 +48,10 @@ public class NeueWatchlist extends Dialog implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource().equals(speichern)) {
+		if (e.getActionCommand().equals("Speichern")) {
 			try {
 				Watchlist w = new Watchlist(nametf.getText());
-				unique.linkWatchlist(w);
+				WatchlistContainer.instance().linkWatchlist(w);
 				owner.refreshWatchlist();
 				owner.setMessage("Watchlist erfolgreich angelegt");
 				dispose();
@@ -68,8 +60,7 @@ public class NeueWatchlist extends Dialog implements ActionListener {
 			} catch (DataFormatException d) {
 				owner.setMessage(d.getMessage());
 			}
-		} else if (e.getSource().equals(abbrechen)) {
+		} else if (e.getActionCommand().equals("Abbrechen"))
 			dispose();
-		}
 	}
 }

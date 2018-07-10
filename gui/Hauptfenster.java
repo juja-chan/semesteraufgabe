@@ -12,7 +12,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.WindowEvent;
-import java.util.zip.DataFormatException;
 import java.awt.List;
 import java.awt.Menu;
 import java.awt.MenuBar;
@@ -30,15 +29,17 @@ public class Hauptfenster extends Frame implements ItemListener, ActionListener 
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private Button nFilm;
-	private Button nList;
+	private Button hFilm;
+	private Button lFilm;
+	private Button hList;
+	private Button lList;
 	private List listFilm;
 	private List listWatch;
 	private Label labelList;
 	private Label labelFilm;
-	private Verwaltung unique;
+	private WatchlistContainer wcon;
+	private FilmContainer fcon;
 	private TextField statusTextField;
-	private Film film;
 
 	public Hauptfenster() {
 
@@ -46,19 +47,26 @@ public class Hauptfenster extends Frame implements ItemListener, ActionListener 
 
 		MenuBar menubar = new MenuBar();
 		Menu menu = new Menu("File");
-		MenuItem loadMI = new MenuItem("Load...");
-		MenuItem saveMI = new MenuItem("Save...");
+		MenuItem loadMI = new MenuItem("Datenbank importieren");
+		MenuItem saveFilm = new MenuItem("Filme speichern");
+		MenuItem saveWatchlist = new MenuItem("Watchlisten speichern");
+		MenuItem saveMI = new MenuItem("Alles speichern");
 
-		unique = Verwaltung.instance();
+		wcon = WatchlistContainer.instance();
+		fcon = FilmContainer.instance();
 		statusTextField = new TextField();
-		nFilm = new Button("Neuer Film");
-		nList = new Button("Neue Watchlist");
+		hFilm = new Button("Hinzufügen");
+		lFilm = new Button("Löschen");
+		hList = new Button("Hinzufügen");
+		lList = new Button("Löschen");
 		listFilm = new List(5, false);
 		listWatch = new List(5, false);
 		labelList = new Label("Watchlisten");
 		labelFilm = new Label("Unsortierte Filme");
 
 		Panel links = new Panel();
+		Panel buttonLinks = new Panel();
+		Panel buttonRechts = new Panel();
 		Panel rechts = new Panel();
 		Panel oben = new Panel();
 
@@ -71,21 +79,31 @@ public class Hauptfenster extends Frame implements ItemListener, ActionListener 
 
 		listFilm.addItemListener(this);
 		listWatch.addItemListener(this);
-		nList.addActionListener(this);
-		nFilm.addActionListener(this);
+		hList.addActionListener(this);
+		hFilm.addActionListener(this);
+		lList.addActionListener(this);
+		lFilm.addActionListener(this);
 		statusTextField.setEditable(false);
 
 		loadMI.addActionListener(this);
+		saveFilm.addActionListener(this);
+		saveWatchlist.addActionListener(this);
 		saveMI.addActionListener(this);
 
 		links.add(labelFilm, BorderLayout.NORTH);
 		links.add(listFilm, BorderLayout.CENTER);
-		links.add(nFilm, BorderLayout.SOUTH);
+		buttonLinks.add(hFilm);
+		buttonLinks.add(lFilm);
+		links.add(buttonLinks, BorderLayout.SOUTH);
 		rechts.add(labelList, BorderLayout.NORTH);
 		rechts.add(listWatch, BorderLayout.CENTER);
-		rechts.add(nList, BorderLayout.SOUTH);
+		buttonRechts.add(hList);
+		buttonRechts.add(lList);
+		rechts.add(buttonRechts, BorderLayout.SOUTH);
 
 		menu.add(loadMI);
+		menu.add(saveFilm);
+		menu.add(saveWatchlist);
 		menu.add(saveMI);
 		menubar.add(menu);
 		setMenuBar(menubar);
@@ -105,84 +123,18 @@ public class Hauptfenster extends Frame implements ItemListener, ActionListener 
 		pack();
 		setVisible(true);
 
-		try {
-			film = new Film("Star Wars", "George Lucas", 1977, true, 10);
-			Film s = new Film("Der weisse Hai", "S. Spielberg", 1978, true, 8);
-			unique.linkDigitalEntertainment(film);
-			unique.linkDigitalEntertainment(s);
-			refreshFilm();
-		} catch (DataFormatException | IllegalInputException e) {
-			setMessage(e.getMessage());
-		}
-
-	}
-
-	public void itemStateChanged(ItemEvent e) {
-		if (e.getSource().equals(listWatch)) {
-			for (int i = 0; i < unique.getAlleWatchlists().size(); i++) {
-				if (unique.getWatchlist(i).getName().equals(listWatch.getSelectedItem()))
-					new EditWatchlist(this, unique, unique.getAlleWatchlists().get(i));
-			}
-		} else {
-			new EditFilm(this, unique.searchDigitalEntertainment(listFilm.getSelectedIndex()));
-		}
-	}
-
-	public void actionPerformed(ActionEvent e1) {
-
-		if (e1.getActionCommand().equals("Save..."))
-			onSave();
-		else if (e1.getActionCommand().equals("Load..."))
-			onLoad();
-		else if (e1.getSource().equals(nFilm))
-			new NeuerFilm(this);
-		else if (e1.getSource().equals(nList))
-			new NeueWatchlist(this);
 	}
 
 	public void refreshWatchlist() {
 		listWatch.removeAll();
-		for (int i = 0; unique.getAlleWatchlists().size() > i; i++)
-			listWatch.add(unique.getWatchlist(i).getName());
+		for (Watchlist w : wcon)
+			listWatch.add(w.getName());
 	}
 
 	public void refreshFilm() {
 		listFilm.removeAll();
-		for (DigitalEntertainment d : unique)
+		for (Film d : fcon)
 			listFilm.add(d.getName());
-	}
-
-	private void onLoad() {
-		FileDialog fd = new FileDialog(this, "Load Parcels...", FileDialog.LOAD);
-		fd.setVisible(true);
-		if (fd.getFile() != null) {
-			String filename = fd.getDirectory() + fd.getFile();
-			try {
-				unique.load(filename);
-				setMessage("Erfolgreich geladen");
-				for (DigitalEntertainment d : unique)
-					setMessage(d.getName());
-			} catch (LoadSaveException e) {
-				setMessage(e.getMessage());
-			}
-			refreshFilm();
-		} else
-			setMessage("Keine Datei zum Laden gewählt!");
-	}
-
-	private void onSave() {
-		FileDialog fd = new FileDialog(this, "Save", FileDialog.SAVE);
-		fd.setVisible(true);
-		if (fd.getFile() != null) {
-			String filename = fd.getDirectory() + fd.getFile();
-			try {
-				unique.save(filename);
-				setMessage("Erfolgreich gespeichert");
-			} catch (LoadSaveException e) {
-				setMessage("Speicherfehler: " + e.getMessage());
-			}
-		} else
-			setMessage("Keine Datei zum Speichern gewählt!");
 	}
 
 	public void setMessage(String s) {
@@ -191,4 +143,97 @@ public class Hauptfenster extends Frame implements ItemListener, ActionListener 
 		else
 			statusTextField.setText("");
 	}
+
+	public void itemStateChanged(ItemEvent e) {
+		if (e.getSource().equals(listWatch)) {
+			new EditWatchlist(this, wcon.getWatchlist(listWatch.getSelectedIndex()));
+		} else {
+			new EditFilm(this, fcon.getFilm(listFilm.getSelectedIndex()));
+		}
+	}
+
+	public void actionPerformed(ActionEvent e) {
+
+		if (e.getActionCommand().equals("Alles speichern"))
+			onSave(true, true);
+		else if (e.getActionCommand().equals("Filme speichern"))
+			onSave(true, false);
+		else if (e.getActionCommand().equals("Watchlisten speichern"))
+			onSave(false, true);
+		else if (e.getActionCommand().equals("Datenbank importieren"))
+			onLoad();
+		else if (e.getSource().equals(hFilm))
+			new NeuerFilm(this);
+		else if (e.getSource().equals(hList))
+			new NeueWatchlist(this);
+		else if (e.getSource().equals(lFilm)) {
+			try {
+				if (listFilm.getSelectedIndex() != -1) {
+					fcon.unlinkFilm(fcon.getFilm(listFilm.getSelectedIndex()));
+					refreshFilm();
+				} else
+					setMessage("Kein Film ausgewählt");
+			} catch (IllegalInputException i) {
+				setMessage(i.getMessage());
+			}
+		} else if (e.getSource().equals(lList)) {
+			try {
+				if (listWatch.getSelectedIndex() != -1) {
+					wcon.unlinkWatchlist(wcon.getWatchlist(listWatch.getSelectedIndex()));
+					refreshWatchlist();
+				} else
+					setMessage("Keine Watchlist ausgewählt");
+			} catch (IllegalInputException i) {
+				setMessage(i.getMessage());
+			}
+		}
+	}
+
+	private void onSave(boolean speicherFilm, boolean speicherWatchlist) {
+		if (speicherFilm) {
+			FileDialog fd = new FileDialog(this, "Filme speichern", FileDialog.SAVE);
+			fd.setVisible(true);
+			if (fd.getFile() != null) {
+				String filename = fd.getDirectory() + fd.getFile();
+				try {
+					fcon.save(filename);
+					setMessage("Filme erfolgreich gespeichert");
+				} catch (LoadSaveException e) {
+					setMessage("Speicherfehler: " + e.getMessage());
+				}
+			} else
+				setMessage("Keine Datei zum Speichern gewählt!" + fd.getFile());
+		}
+		if (speicherWatchlist) {
+			FileDialog fd = new FileDialog(this, "Watchlisten speichern", FileDialog.SAVE);
+			fd.setVisible(true);
+			if (fd.getFile() != null) {
+				String filename = fd.getDirectory() + fd.getFile();
+				try {
+					wcon.save(filename);
+					setMessage("Watchlisten erfolgreich gespeichert");
+				} catch (LoadSaveException e) {
+					setMessage("Speicherfehler: " + e.getMessage());
+				}
+			} else
+				setMessage("Keine Datei zum Speichern gewählt!");
+		}
+	}
+
+	private void onLoad() {
+		FileDialog fd = new FileDialog(this, "Load Parcels...", FileDialog.LOAD);
+		fd.setVisible(true);
+		if (fd.getFile() != null) {
+			String filename = fd.getDirectory() + fd.getFile();
+			try {
+				wcon.load(filename);
+			} catch (LoadSaveException e) {
+				setMessage(e.getMessage());
+			}
+			refreshFilm();
+			refreshWatchlist();
+		} else
+			setMessage("Keine Datei zum Laden gewählt!");
+	}
+
 }
